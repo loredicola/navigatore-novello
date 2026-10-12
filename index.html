@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#151515">
+    <title>Navigatore</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+    <div>
+        <small id="year"></small>
+        <h1 id="name"></h1>
+        <p id="subtitle"></p>
+    </div>
+    <button id="locate" aria-label="La mia posizione">⌖</button>
+</header>
+
+<main>
+
+    <section class="search">
+        <label>
+            ⌕
+            <input id="search" type="search" placeholder="Cerca una pietanza...">
+            <button id="clear">×</button>
+        </label>
+        <div id="filters"></div>
+    </section>
+
+    <!-- Navigazione mobile -->
+    <nav class="view-tabs" aria-label="Navigazione">
+        <button id="tab-map" class="view-tab active" type="button">
+            🗺️ Mappa
+        </button>
+        <button id="tab-dishes" class="view-tab" type="button">
+            🍴 Pietanze
+        </button>
+    </nav>
+
+    <section id="map-section" class="mapbox">
+        <div class="sect">
+            <div>
+                <small>DOVE TROVARLA</small>
+                <h2>Mappa delle postazioni</h2>
+            </div>
+
+            <div>
+                <button class="zoom" id="minus">−</button>
+                <button class="zoom" id="reset">100%</button>
+                <button class="zoom" id="plus">+</button>
+            </div>
+        </div>
+
+        <div id="viewport">
+            <div id="stage">
+                <img id="map" alt="Mappa delle postazioni">
+                <div id="markers"></div>
+            </div>
+        </div>
+
+        <p class="hint">
+            Tocca una postazione oppure una pietanza.
+            Puoi ingrandire la mappa.
+        </p>
+    </section>
+
+    <section id="dishes-section">
+        <div class="sect">
+            <div>
+                <small>MENU</small>
+                <h2>Pietanze</h2>
+            </div>
+            <span id="count"></span>
+        </div>
+
+        <div id="dishes"></div>
+        <div id="empty" class="empty">Nessuna pietanza trovata.</div>
+    </section>
+
+</main>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

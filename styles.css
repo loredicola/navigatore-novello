@@ -1,0 +1,453 @@
+*{box-sizing:border-box}
+
+:root{
+    --bg:#f5f3ef;
+    --white:#fff;
+    --text:#1d1c1a;
+    --muted:#77736d;
+    --red:#a33b2f;
+    --border:#ded9d1
+}
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+
+button,input{
+    font:inherit
+}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:#151515;
+    color:#fff;
+    padding:max(14px,env(safe-area-inset-top)) 16px 14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center
+}
+
+header div{
+    max-width:760px;
+    margin:auto 0
+}
+
+header small,
+section small{
+    letter-spacing:.12em;
+    font-size:.68rem;
+    font-weight:800;
+    color:#d8b1aa
+}
+
+h1{
+    font:700 1.55rem Georgia,serif;
+    margin:2px 0
+}
+
+header p{
+    margin:0;
+    color:#c7c3bd;
+    font-size:.88rem
+}
+
+header button{
+    border:1px solid #555;
+    background:#292929;
+    color:#fff;
+    border-radius:12px;
+    width:42px;
+    height:42px;
+    font-size:1.4rem
+}
+
+main{
+    max-width:760px;
+    margin:auto;
+    padding:10px 14px 40px
+}
+
+/* Ricerca */
+
+.search{
+    position:sticky;
+    top:72px;
+    z-index:10;
+    padding:8px 0 12px;
+    background:linear-gradient(var(--bg) 80%,transparent)
+}
+
+.search label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:0 12px;
+    box-shadow:0 5px 20px #00000012
+}
+
+.search input{
+    width:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    padding:13px 0
+}
+
+.search label>button{
+    border:0;
+    background:none;
+    font-size:1.3rem;
+    color:var(--muted)
+}
+
+#filters{
+    display:flex;
+    gap:7px;
+    overflow:auto;
+    padding:9px 0
+}
+
+.filter,
+.zoom{
+    white-space:nowrap;
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--muted);
+    border-radius:999px;
+    padding:7px 11px
+}
+
+.filter.active{
+    background:var(--red);
+    color:#fff;
+    border-color:var(--red)
+}
+
+/* Navigazione Mappa / Pietanze */
+
+.view-tabs{
+    display:none;
+}
+
+.view-tab{
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    font-weight:800;
+    padding:10px 8px;
+    border-radius:10px
+}
+
+.view-tab.active{
+    background:var(--red);
+    color:#fff
+}
+
+/* Titoli */
+
+.sect{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:10px;
+    margin:18px 0 10px
+}
+
+.sect h2{
+    font:700 1.35rem Georgia,serif;
+    margin:2px 0
+}
+
+/* Zoom */
+
+.zoom{
+    border-radius:10px;
+    min-width:38px;
+    min-height:36px;
+    padding:0 8px;
+    font-weight:700
+}
+
+/* Mappa */
+
+.mapbox #viewport{
+    height:min(72vh,720px);
+    min-height:420px;
+    overflow:auto;
+    background:#090909;
+    border-radius:16px;
+    border:1px solid #171717;
+    box-shadow:0 8px 24px #00000017
+}
+
+.mapbox #stage{
+    position:relative;
+    width:100%;
+    transform-origin:top left
+}
+
+.mapbox img{
+    display:block;
+    width:100%;
+    height:auto;
+    user-select:none;
+    -webkit-user-drag:none
+}
+
+#markers{
+    position:absolute;
+    inset:0;
+    z-index:5;
+    pointer-events:none
+}
+
+.marker{
+    position:absolute;
+    transform:translate(-50%,-50%);
+    width:32px;
+    height:32px;
+    border:2px solid #fff;
+    border-radius:50%;
+    background:var(--red);
+    color:#fff;
+    font-size:.78rem;
+    font-weight:900;
+    box-shadow:0 2px 8px #0008;
+    pointer-events:auto;
+    z-index:6
+}
+
+.marker.active{
+    background:#e0a31a;
+    transform:translate(-50%,-50%) scale(1.3);
+    z-index:10
+}
+
+.marker span{
+    position:absolute;
+    top:calc(100% + 6px);
+    left:50%;
+    transform:translateX(-50%);
+    background:#111e;
+    color:#fff;
+    border-radius:8px;
+    padding:4px 7px;
+    font-size:.68rem;
+    white-space:nowrap;
+    opacity:0
+}
+
+.marker.active span{
+    opacity:1
+}
+
+.hint{
+    color:var(--muted);
+    font-size:.75rem
+}
+
+/* Pietanze */
+
+.dish{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:13px 14px;
+    margin:9px 0;
+    cursor:pointer
+}
+
+.dish.active{
+    border-color:var(--red)
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px
+}
+
+.dishname{
+    font-weight:800
+}
+
+.cat{
+    color:var(--red);
+    font-size:.72rem;
+    font-weight:800
+}
+
+.where,
+.desc{
+    color:var(--muted);
+    font-size:.8rem;
+    margin-top:5px
+}
+
+.go{
+    display:inline-block;
+    color:var(--red);
+    font-size:.78rem;
+    font-weight:800;
+    text-decoration:none;
+    margin-top:8px
+}
+
+.empty{
+    text-align:center;
+    color:var(--muted);
+    padding:30px
+}
+
+.hidden{
+    display:none!important
+}
+
+/* Toast */
+
+#toast{
+    position:fixed;
+    z-index:100;
+    left:50%;
+    bottom:18px;
+    transform:translate(-50%,20px);
+    opacity:0;
+    background:#181818;
+    color:#fff;
+    border-radius:999px;
+    padding:10px 14px;
+    font-size:.8rem;
+    transition:.2s;
+    pointer-events:none
+}
+
+#toast.show{
+    opacity:1;
+    transform:translate(-50%,0)
+}
+
+/* Desktop */
+
+@media(min-width:700px){
+
+    main{
+        padding-top:20px
+    }
+
+    .mapbox #viewport{
+        height:760px
+    }
+
+    #dishes{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:9px
+    }
+
+    .dish{
+        margin:0
+    }
+}
+
+/* Smartphone */
+
+@media(max-width:699px){
+
+    main{
+        padding-bottom:30px
+    }
+
+    /*
+     * Le due viste diventano vere e proprie schede.
+     */
+    .view-tabs{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:4px;
+        position:sticky;
+        top:var(--mobile-tabs-top,72px);
+        z-index:9;
+        background:var(--bg);
+        padding:5px;
+        margin:0 0 8px;
+        border:1px solid var(--border);
+        border-radius:13px;
+        box-shadow:0 4px 14px #00000010
+    }
+
+    .view-tab{
+        font-size:.9rem
+    }
+
+    /*
+     * Di default su smartphone vediamo la mappa.
+     */
+    #dishes-section{
+        display:none
+    }
+
+    #map-section{
+        display:block
+    }
+
+    /*
+     * Quando viene selezionata la modalità Pietanze,
+     * app.js aggiunge .show-dishes al body.
+     */
+    body.show-dishes #map-section{
+        display:none
+    }
+
+    body.show-dishes #dishes-section{
+        display:block
+    }
+
+    /*
+     * In modalità pietanze la ricerca rimane visibile:
+     * è utile per cercare velocemente un piatto.
+     */
+    body.show-dishes .search{
+        position:sticky;
+        top:var(--mobile-tabs-top,72px);
+    }
+
+    body.show-dishes .view-tabs{
+        top:var(--mobile-tabs-top,72px);
+    }
+
+    /*
+     * La mappa su telefono occupa quasi tutto lo spazio
+     * disponibile senza rendere la pagina interminabile.
+     */
+    .mapbox #viewport{
+        height:calc(100vh - 260px);
+        min-height:430px;
+        max-height:650px
+    }
+
+    .sect{
+        margin-top:14px
+    }
+
+    .dish{
+        margin:8px 0;
+        padding:14px
+    }
+
+    .dishname{
+        font-size:.95rem
+    }
+
+    .where,
+    .desc{
+        font-size:.78rem
+    }
+}

@@ -1,0 +1,408 @@
+* {
+    box-sizing: border-box
+}
+
+:root {
+    --bg: #f3f1ed;
+    --white: #fff;
+    --text: #1d1c1a;
+    --muted: #77736d;
+    --border: #ddd8d0;
+    --red: #a33b2f
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+}
+
+button, input, select, textarea {
+    font: inherit
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #151515;
+    color: #fff;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: center
+}
+
+header small, section small {
+    letter-spacing: .12em;
+    font-size: .67rem;
+    font-weight: 800;
+    color: #d8b1aa
+}
+
+h1 {
+    font: 700 1.45rem Georgia, serif;
+    margin: 2px 0
+}
+
+.actions {
+    display: flex;
+    gap: 7px
+}
+
+button {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 9px 12px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 700
+}
+
+.actions button:last-of-type, .formbuttons button:last-child {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red)
+}
+
+main {
+    max-width: 1500px;
+    margin: auto;
+    padding: 14px;
+    display: grid;
+    grid-template-columns:390px minmax(0, 1fr);
+    gap: 14px
+}
+
+.login{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:grid;
+    place-items:center;
+    padding:20px;
+    background:#151515
+}
+
+.login-card{
+    width:min(380px,100%);
+    background:#fff;
+    border-radius:18px;
+    padding:24px;
+    box-shadow:0 20px 60px #0008
+}
+
+.login-card small{
+    letter-spacing:.12em;
+    font-size:.67rem;
+    font-weight:800;
+    color:#a33b2f
+}
+
+.login-card h1{
+    font:700 1.5rem Georgia,serif;
+    margin:5px 0 20px
+}
+
+.login-card label{
+    display:grid;
+    gap:5px;
+    color:#77736d;
+    font-size:.75rem;
+    font-weight:700;
+    margin:12px 0
+}
+
+.login-card input{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd8d0;
+    border-radius:9px;
+    background:#fff
+}
+
+.login-card button{
+    width:100%;
+    margin-top:8px;
+    border:0;
+    border-radius:9px;
+    padding:11px;
+    background:#a33b2f;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer
+}
+
+#login-error{
+    display:none;
+    color:#a32929;
+    font-size:.8rem;
+    margin:12px 0 0
+}
+
+#login-error.show{
+    display:block
+}
+
+body.locked{
+    overflow:hidden
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px #00000010
+}
+
+.panel h2 {
+    font: 700 1.15rem Georgia, serif;
+    margin: 2px 0 12px
+}
+
+.panel > p, .maparea > p {
+    color: var(--muted);
+    font-size: .76rem;
+    line-height: 1.4
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: start
+}
+
+.title button {
+    border: 0;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    font-size: 1.3rem;
+    padding: 0
+}
+
+label {
+    display: grid;
+    gap: 5px;
+    color: var(--muted);
+    font-size: .75rem;
+    font-weight: 700;
+    margin: 9px 0
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fff
+}
+
+.item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px;
+    margin: 7px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 7px
+}
+
+.item.sel {
+    border-color: var(--red);
+    background: #f3ded9
+}
+
+.item b {
+    font-size: .84rem
+}
+
+.meta {
+    color: var(--muted);
+    font-size: .7rem;
+    margin-top: 2px
+}
+
+.mini {
+    border: 0;
+    background: transparent;
+    padding: 4px;
+    color: var(--muted)
+}
+
+.danger {
+    color: #a32929
+}
+
+.note {
+    background: #fffaf0
+}
+
+.maphead {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 11px 13px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.maphead button {
+    min-width: 38px;
+    padding: 7px
+}
+
+.maphead b {
+    font-size: .85rem
+}
+
+.maparea #vp {
+    height: calc(100vh - 135px);
+    min-height: 600px;
+    overflow: auto;
+    background: #090909;
+    border-radius: 15px;
+    border: 1px solid #171717;
+    touch-action: pan-x pan-y
+}
+
+.maparea #stage {
+    position: relative;
+    width: 100%;
+    transform-origin: top left
+}
+
+.maparea img {
+    display: block;
+    width: 100%;
+    height: auto;
+    user-select: none
+}
+
+#markers {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none
+}
+
+.marker {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    transform: translate(-50%, -50%);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 3px 13px #000a;
+    font-weight: 900;
+    cursor: grab;
+    touch-action: none;
+    pointer-events: auto;
+    z-index: 6
+}
+
+.marker.sel {
+    background: #e0a31a;
+    transform: translate(-50%, -50%) scale(1.18)
+}
+
+#modal {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    background: #0009;
+    display: grid;
+    place-items: center;
+    padding: 15px
+}
+
+.hidden {
+    display: none !important
+}
+
+.card {
+    width: min(560px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 17px;
+    padding: 16px
+}
+
+.modalhead {
+    display: flex;
+    justify-content: space-between
+}
+
+.modalhead h2 {
+    margin: 0;
+    font: 700 1.3rem Georgia, serif
+}
+
+.modalhead button {
+    border: 0;
+    background: transparent;
+    font-size: 1.6rem
+}
+
+.formbuttons {
+    display: flex;
+    justify-content: end;
+    gap: 7px;
+    margin-top: 15px
+}
+
+#toast {
+    position: fixed;
+    z-index: 200;
+    left: 50%;
+    bottom: 18px;
+    transform: translate(-50%, 20px);
+    opacity: 0;
+    background: #181818;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 999px;
+    font-size: .8rem;
+    transition: .2s
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0)
+}
+
+@media (max-width: 900px) {
+    header {
+        align-items: start;
+        flex-direction: column
+    }
+
+    .actions {
+        width: 100%
+    }
+
+    .actions button {
+        flex: 1
+    }
+
+    main {
+        grid-template-columns:1fr;
+        padding: 8px
+    }
+
+    .maparea #vp {
+        height: 70vh;
+        min-height: 480px
+    }
+}

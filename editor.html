@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Editor — Festa di Catignano</title>
+    <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+<div id="login" class="login">
+    <div class="login-card">
+        <small>EDITOR ANNUALE</small>
+        <h1>Accesso</h1>
+
+        <form id="login-form">
+            <label>
+                Utente
+                <input id="login-user" autocomplete="username" required>
+            </label>
+
+            <label>
+                Password
+                <input id="login-pass" type="password" autocomplete="current-password" required>
+            </label>
+
+            <button type="submit">Accedi</button>
+
+            <p id="login-error">Credenziali non valide.</p>
+        </form>
+    </div>
+</div>
+<header>
+    <div><small>EDITOR ANNUALE</small>
+        <h1>Postazioni e pietanze</h1></div>
+    <div class="actions">
+        <button id="import">Importa config</button>
+        <button id="export">Esporta config.js</button>
+        <input id="file" type="file" accept=".js,.json" hidden></div>
+</header>
+<main>
+    <aside>
+        <section class="panel"><small>EVENTO</small>
+            <h2>Informazioni</h2><label>Nome<input id="ename"></label><label>Anno<input id="eyear"
+                                                                                        type="number"></label><label>Sottotitolo<input
+                    id="esub"></label></section>
+        <section class="panel">
+            <div class="title">
+                <div><small>POSTAZIONI</small>
+                    <h2>Elenco</h2></div>
+                <button id="addstand">+</button>
+            </div>
+            <p>Seleziona una postazione e trascina il pallino sulla mappa.</p>
+            <div id="stands"></div>
+        </section>
+        <section class="panel">
+            <div class="title">
+                <div><small>PIETANZE</small>
+                    <h2>Menu</h2></div>
+                <button id="adddish">+</button>
+            </div>
+            <div id="dishes"></div>
+        </section>
+        <section class="panel note"><b>Ogni anno:</b>
+            <p>modifica qui l'edizione, posiziona i pallini, assegna le pietanze e premi <b>Esporta config.js</b>.
+                Sostituisci poi il vecchio file sul sito.</p></section>
+    </aside>
+    <section class="maparea">
+        <div class="maphead"><b id="selected">Nessuna postazione</b>
+            <div>
+                <button id="out">−</button>
+                <button id="zr">100%</button>
+                <button id="in">+</button>
+            </div>
+        </div>
+        <div id="vp">
+            <div id="stage"><img src="mappa-catignano.png" alt="Mappa">
+                <div id="markers"></div>
+            </div>
+        </div>
+        <p>Le coordinate X/Y vengono aggiornate automaticamente trascinando i pallini.</p></section>
+</main>
+<div id="modal" class="hidden">
+    <div class="card">
+        <div class="modalhead"><h2 id="mtitle"></h2>
+            <button id="close">×</button>
+        </div>
+        <form id="form">
+            <div id="fields"></div>
+            <div class="formbuttons">
+                <button type="button" id="cancel">Annulla</button>
+                <button>Salva</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="toast"></div>
+<script src="config.js"></script>
+<script src="editor.js"></script>
+</body>
+</html>
