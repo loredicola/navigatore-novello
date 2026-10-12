@@ -31,7 +31,7 @@
 </div>
 <header>
     <div><small>EDITOR ANNUALE</small>
-        <h1>Postazioni e pietanze</h1></div>
+        <h1>Cantine e pietanze</h1></div>
     <div class="actions">
         <button id="import">Importa config</button>
         <button id="export">Esporta config.js</button>
@@ -45,11 +45,11 @@
                     id="esub"></label></section>
         <section class="panel">
             <div class="title">
-                <div><small>POSTAZIONI</small>
+                <div><small>CANTINE</small>
                     <h2>Elenco</h2></div>
                 <button id="addstand">+</button>
             </div>
-            <p>Seleziona una postazione e trascina il pallino sulla mappa.</p>
+            <p>Ogni pallino è una cantina. Assegna un numero diverso a ciascuna: il numero identifica la cantina.</p>
             <div id="stands"></div>
         </section>
         <section class="panel">
@@ -65,15 +65,16 @@
                 Sostituisci poi il vecchio file sul sito.</p></section>
     </aside>
     <section class="maparea">
-        <div class="maphead"><b id="selected">Nessuna postazione</b>
+        <div class="maphead"><b id="selected">Nessuna cantina</b>
             <div>
+                <button id="totem" title="Genera il link per un totem">Link totem</button>
                 <button id="out">−</button>
                 <button id="zr">100%</button>
                 <button id="in">+</button>
             </div>
         </div>
         <div id="vp">
-            <div id="stage"><img src="mappa-catignano.png" alt="Mappa">
+            <div id="stage"><img id="map" alt="Mappa">
                 <div id="markers"></div>
             </div>
         </div>

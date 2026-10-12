@@ -52,6 +52,11 @@ const EDITOR_PASSWORD = 'catignano';
         return Math.min(b, Math.max(a, v))
     }
 
+    // Ogni cantina ha un numero identificativo univoco.
+    function num(p) {
+        return p.numero ?? d.postazioni.indexOf(p) + 1
+    }
+
     function render() {
         $('ename').value = d.nome || '';
         $('eyear').value = d.anno || '';
@@ -63,7 +68,7 @@ const EDITOR_PASSWORD = 'catignano';
     }
 
     function renderStands() {
-        $('stands').innerHTML = d.postazioni.map((p, i) => `<div class="item ${p.id === sel ? 'sel' : ''}" data-id="${esc(p.id)}"><div><b>${i + 1}. ${esc(p.nome)}</b><div class="meta">X ${n(p.x).toFixed(1)}% · Y ${n(p.y).toFixed(1)}%</div></div><div><button class="mini edit">✎</button><button class="mini danger del">×</button></div></div>`).join('');
+        $('stands').innerHTML = d.postazioni.map(p => `<div class="item ${p.id === sel ? 'sel' : ''}" data-id="${esc(p.id)}"><div><b>Cantina ${num(p)} · ${esc(p.nome)}</b><div class="meta">X ${n(p.x).toFixed(1)}% · Y ${n(p.y).toFixed(1)}%</div></div><div><button class="mini edit">✎</button><button class="mini danger del">×</button></div></div>`).join('');
         document.querySelectorAll('#stands .item').forEach(e => {
             e.onclick = () => select(e.dataset.id);
             e.querySelector('.edit').onclick = x => {
@@ -80,18 +85,18 @@ const EDITOR_PASSWORD = 'catignano';
     function renderDishes() {
         $('dishes').innerHTML = d.pietanze.map(x => {
             let p = d.postazioni.find(y => y.id === x.postazione);
-            return `<div class="item"><div><b>${esc(x.nome)}</b><div class="meta">${esc(x.categoria || '')} · ${esc(p?.nome || 'Nessuna postazione')}</div></div><div><button class="mini editdish" data-id="${esc(x.id)}">✎</button><button class="mini danger deldish" data-id="${esc(x.id)}">×</button></div></div>`
+            return `<div class="item"><div><b>${esc(x.nome)}</b><div class="meta">${esc(x.categoria || '')} · ${esc(p?.nome || 'Nessuna cantina')}</div></div><div><button class="mini editdish" data-id="${esc(x.id)}">✎</button><button class="mini danger deldish" data-id="${esc(x.id)}">×</button></div></div>`
         }).join('');
         document.querySelectorAll('.editdish').forEach(b => b.onclick = () => dishModal(b.dataset.id));
         document.querySelectorAll('.deldish').forEach(b => b.onclick = () => delDish(b.dataset.id))
     }
 
     function renderMarkers() {
-        markers.innerHTML = d.postazioni.map((p, i) =>
+        markers.innerHTML = d.postazioni.map(p =>
             `<button class="marker ${p.id === sel ? 'sel' : ''}"
              data-id="${esc(p.id)}"
              style="left:${n(p.x)}%;top:${n(p.y)}%">
-        ${i + 1}
+        ${num(p)}
      </button>`
         ).join('');
         document.querySelectorAll('.marker').forEach(b => {
@@ -118,7 +123,7 @@ const EDITOR_PASSWORD = 'catignano';
 
     function label() {
         let p = d.postazioni.find(x => x.id === sel);
-        $('selected').textContent = p ? `${p.nome} · ${n(p.x).toFixed(1)}%, ${n(p.y).toFixed(1)}%` : 'Nessuna postazione'
+        $('selected').textContent = p ? `Cantina ${num(p)} · ${p.nome} · ${n(p.x).toFixed(1)}%, ${n(p.y).toFixed(1)}%` : 'Nessuna cantina'
     }
 
     function startDrag(e) {
@@ -154,8 +159,8 @@ const EDITOR_PASSWORD = 'catignano';
 
     function standModal(id) {
         let p = d.postazioni.find(x => x.id === id);
-        $('mtitle').textContent = 'Modifica postazione';
-        fields.innerHTML = `<label>Nome<input name="name" required value="${escA(p.nome)}"></label><label>Latitudine (opzionale)<input name="lat" value="${escA(p.lat ?? '')}"></label><label>Longitudine (opzionale)<input name="lng" value="${escA(p.lng ?? '')}"></label>`;
+        $('mtitle').textContent = 'Modifica cantina';
+        fields.innerHTML = `<label>Nome della cantina<input name="name" required value="${escA(p.nome)}"></label><label>Numero sul pallino (unico per ogni cantina)<input name="numero" type="number" min="1" required value="${escA(num(p))}"></label><label>Latitudine (opzionale)<input name="lat" value="${escA(p.lat ?? '')}"></label><label>Longitudine (opzionale)<input name="lng" value="${escA(p.lng ?? '')}"></label>`;
         modal.dataset.type = 'stand';
         modal.dataset.id = id;
         modal.classList.remove('hidden')
@@ -170,7 +175,7 @@ const EDITOR_PASSWORD = 'catignano';
             postazione: d.postazioni[0]?.id || ''
         };
         $('mtitle').textContent = id ? 'Modifica pietanza' : 'Nuova pietanza';
-        fields.innerHTML = `<label>Nome<input name="name" required value="${escA(x.nome)}"></label><label>ID tecnico<input name="id" required value="${escA(x.id)}" ${id ? 'readonly' : ''}></label><label>Categoria<input name="cat" value="${escA(x.categoria || '')}"></label><label>Descrizione<textarea name="desc" rows="3">${esc(x.descrizione || '')}</textarea></label><label>Postazione<select name="stand"><option value="">Nessuna</option>${d.postazioni.map(p => `<option value="${escA(p.id)}" ${p.id === x.postazione ? 'selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>`;
+        fields.innerHTML = `<label>Nome<input name="name" required value="${escA(x.nome)}"></label><label>ID tecnico<input name="id" required value="${escA(x.id)}" ${id ? 'readonly' : ''}></label><label>Categoria<input name="cat" value="${escA(x.categoria || '')}"></label><label>Descrizione<textarea name="desc" rows="3">${esc(x.descrizione || '')}</textarea></label><label>Cantina di ritiro<select name="stand"><option value="">Nessuna</option>${d.postazioni.map(p => `<option value="${escA(p.id)}" ${p.id === x.postazione ? 'selected' : ''}>Cantina ${num(p)} · ${esc(p.nome)}</option>`).join('')}</select></label>`;
         modal.dataset.type = 'dish';
         modal.dataset.id = id || '';
         modal.classList.remove('hidden')
@@ -181,7 +186,13 @@ const EDITOR_PASSWORD = 'catignano';
         let f = new FormData(e.target), type = modal.dataset.type, id = modal.dataset.id;
         if (type === 'stand') {
             let p = d.postazioni.find(x => x.id === id);
-            p.nome = String(f.get('name')).trim() || 'Postazione';
+            let numero = Math.max(1, parseInt(f.get('numero'), 10) || num(p));
+            if (d.postazioni.some(x => x !== p && num(x) === numero)) {
+                toast(`Il numero ${numero} è già assegnato a un'altra cantina`);
+                return
+            }
+            p.nome = String(f.get('name')).trim() || 'Cantina';
+            p.numero = numero;
             p.lat = coord(f.get('lat'));
             p.lng = coord(f.get('lng'));
         } else {
@@ -206,7 +217,8 @@ const EDITOR_PASSWORD = 'catignano';
     $('cancel').onclick = close;
     $('addstand').onclick = () => {
         let id = next();
-        d.postazioni.push({id, nome: 'Nuova postazione', x: 50, y: 50, lat: null, lng: null});
+        let numero = Math.max(0, ...d.postazioni.map(num)) + 1;
+        d.postazioni.push({id, nome: 'Nuova cantina', numero, x: 50, y: 50, lat: null, lng: null});
         sel = id;
         standModal(id)
     };
@@ -244,12 +256,24 @@ const EDITOR_PASSWORD = 'catignano';
         return Number.isFinite(x) ? x : null
     }
 
+    // Zoom 100% = mappa intera visibile in altezza (la mappa è stretta e lunga)
     function setZoom(z) {
-        zoom = clamp(+z.toFixed(1), 1, 2.5);
-        stage.style.width = zoom * 100 + '%';
+        zoom = clamp(+z.toFixed(1), 1, 4);
+        let img = $('map'), ratio = img.naturalWidth ? img.naturalWidth / img.naturalHeight : 480 / 1960;
+        stage.style.width = Math.min(vp.clientWidth, vp.clientHeight * ratio) * zoom + 'px';
         $('zr').textContent = Math.round(zoom * 100) + '%';
         renderMarkers()
     }
+
+    $('map').onload = () => setZoom(zoom);
+    $('map').src = d.mappa?.immagine || 'mappa-catignano.webp';
+    addEventListener('resize', () => setZoom(zoom));
+
+    $('totem').onclick = () => {
+        let url = new URL('index.html?totem', location.href).href;
+        navigator.clipboard?.writeText(url).then(() => toast('Link del totem copiato'), () => null);
+        prompt('Apri questo indirizzo sul totem:', url)
+    };
 
     $('in').onclick = () => setZoom(zoom + .2);
     $('out').onclick = () => setZoom(zoom - .2);

@@ -6,35 +6,55 @@
     --text:#1d1c1a;
     --muted:#77736d;
     --red:#a33b2f;
-    --border:#ded9d1
+    --border:#ded9d1;
+    --gap:12px
 }
 
+html,body{
+    height:100%
+}
+
+/*
+ * Layout "app": la pagina non scorre, occupa esattamente lo schermo.
+ * Scorrono solo la lista pietanze e la mappa al loro interno.
+ * dvh tiene conto delle barre del browser su iOS/Android.
+ */
 body{
     margin:0;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
     background:var(--bg);
     color:var(--text);
-    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-text-size-adjust:100%
 }
 
 button,input{
     font:inherit
 }
 
+button{
+    cursor:pointer;
+    touch-action:manipulation
+}
+
 header{
-    position:sticky;
-    top:0;
-    z-index:20;
+    flex:none;
     background:#151515;
     color:#fff;
-    padding:max(14px,env(safe-area-inset-top)) 16px 14px;
+    padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));
     display:flex;
     justify-content:space-between;
-    align-items:center
+    align-items:center;
+    gap:10px
 }
 
 header div{
-    max-width:760px;
-    margin:auto 0
+    min-width:0
 }
 
 header small,
@@ -46,41 +66,34 @@ section small{
 }
 
 h1{
-    font:700 1.55rem Georgia,serif;
-    margin:2px 0
+    font:700 1.35rem Georgia,serif;
+    margin:1px 0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis
 }
 
 header p{
     margin:0;
     color:#c7c3bd;
-    font-size:.88rem
-}
-
-header button{
-    border:1px solid #555;
-    background:#292929;
-    color:#fff;
-    border-radius:12px;
-    width:42px;
-    height:42px;
-    font-size:1.4rem
+    font-size:.82rem
 }
 
 main{
-    max-width:760px;
-    margin:auto;
-    padding:10px 14px 40px
+    flex:1;
+    min-height:0;
+    width:100%;
+    display:grid;
+    gap:var(--gap);
+    padding:var(--gap) max(var(--gap),env(safe-area-inset-right)) max(var(--gap),env(safe-area-inset-bottom)) max(var(--gap),env(safe-area-inset-left))
+}
+
+main>section{
+    min-height:0;
+    min-width:0
 }
 
 /* Ricerca */
-
-.search{
-    position:sticky;
-    top:72px;
-    z-index:10;
-    padding:8px 0 12px;
-    background:linear-gradient(var(--bg) 80%,transparent)
-}
 
 .search label{
     display:flex;
@@ -89,19 +102,28 @@ main{
     background:#fff;
     border:1px solid var(--border);
     border-radius:15px;
-    padding:0 12px;
+    padding:0 6px 0 12px;
     box-shadow:0 5px 20px #00000012
 }
 
 .search input{
     width:100%;
+    min-width:0;
     border:0;
     outline:0;
     background:transparent;
-    padding:13px 0
+    padding:12px 0;
+    font-size:16px /* sotto i 16px iOS zooma la pagina al focus */
+}
+
+.search input::-webkit-search-cancel-button{
+    display:none
 }
 
 .search label>button{
+    flex:none;
+    width:40px;
+    height:40px;
     border:0;
     background:none;
     font-size:1.3rem;
@@ -111,18 +133,23 @@ main{
 #filters{
     display:flex;
     gap:7px;
-    overflow:auto;
-    padding:9px 0
+    overflow-x:auto;
+    padding:9px 0 2px;
+    scrollbar-width:none
 }
 
-.filter,
-.zoom{
+#filters::-webkit-scrollbar{
+    display:none
+}
+
+.filter{
+    flex:none;
     white-space:nowrap;
     border:1px solid var(--border);
     background:#fff;
     color:var(--muted);
     border-radius:999px;
-    padding:7px 11px
+    padding:8px 13px
 }
 
 .filter.active{
@@ -131,10 +158,10 @@ main{
     border-color:var(--red)
 }
 
-/* Navigazione Mappa / Pietanze */
+/* Navigazione Mappa / Pietanze (solo smartphone) */
 
 .view-tabs{
-    display:none;
+    display:none
 }
 
 .view-tab{
@@ -158,40 +185,49 @@ main{
     justify-content:space-between;
     align-items:end;
     gap:10px;
-    margin:18px 0 10px
+    margin:14px 0 8px
 }
 
 .sect h2{
-    font:700 1.35rem Georgia,serif;
+    font:700 1.25rem Georgia,serif;
     margin:2px 0
 }
 
-/* Zoom */
-
-.zoom{
-    border-radius:10px;
-    min-width:38px;
-    min-height:36px;
-    padding:0 8px;
-    font-weight:700
+#count{
+    color:var(--muted);
+    font-size:.85rem
 }
 
 /* Mappa */
 
-.mapbox #viewport{
-    height:min(72vh,720px);
-    min-height:420px;
-    overflow:auto;
+.mapbox{
+    position:relative;
+    overflow:hidden;
     background:#090909;
     border-radius:16px;
     border:1px solid #171717;
     box-shadow:0 8px 24px #00000017
 }
 
+/*
+ * Il viewport è un flex container: con margin:auto lo stage
+ * resta centrato quando è più piccolo, e scorre quando è più grande.
+ */
+.mapbox #viewport{
+    position:absolute;
+    inset:0;
+    display:flex;
+    overflow:auto;
+    overscroll-behavior:contain;
+    touch-action:pan-x pan-y; /* il pinch lo gestisce app.js */
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin
+}
+
 .mapbox #stage{
     position:relative;
-    width:100%;
-    transform-origin:top left
+    flex:none;
+    margin:auto
 }
 
 .mapbox img{
@@ -199,7 +235,9 @@ main{
     width:100%;
     height:auto;
     user-select:none;
-    -webkit-user-drag:none
+    -webkit-user-select:none;
+    -webkit-user-drag:none;
+    -webkit-touch-callout:none
 }
 
 #markers{
@@ -212,23 +250,39 @@ main{
 .marker{
     position:absolute;
     transform:translate(-50%,-50%);
-    width:32px;
-    height:32px;
+    width:28px;
+    height:28px;
+    padding:0;
     border:2px solid #fff;
     border-radius:50%;
     background:var(--red);
     color:#fff;
-    font-size:.78rem;
+    font-size:.8rem;
     font-weight:900;
     box-shadow:0 2px 8px #0008;
     pointer-events:auto;
     z-index:6
 }
 
+/* Area di tocco più ampia del pallino */
+.marker::before{
+    content:"";
+    position:absolute;
+    inset:-8px;
+    border-radius:50%
+}
+
 .marker.active{
     background:#e0a31a;
+    color:#111;
     transform:translate(-50%,-50%) scale(1.3);
-    z-index:10
+    z-index:10;
+    animation:pulse 1.6s ease-out infinite
+}
+
+@keyframes pulse{
+    0%{box-shadow:0 0 0 0 #e0a31acc,0 2px 8px #0008}
+    100%{box-shadow:0 0 0 18px #e0a31a00,0 2px 8px #0008}
 }
 
 .marker span{
@@ -242,31 +296,251 @@ main{
     padding:4px 7px;
     font-size:.68rem;
     white-space:nowrap;
-    opacity:0
+    opacity:0;
+    pointer-events:none
 }
 
-.marker.active span{
-    opacity:1
+.marker.active span,
+.marker.peek span,
+.marker.peek{
+    z-index:11
 }
 
-.hint{
-    color:var(--muted);
-    font-size:.75rem
+/* Mappa in caricamento (rete lenta) */
+
+.maploading{
+    position:absolute;
+    inset:0;
+    z-index:12;
+    display:grid;
+    place-items:center;
+    padding:20px;
+    text-align:center;
+    color:#c7c3bd;
+    font-size:.9rem
+}
+
+/* Postazioni selezionate, sovrapposte al fondo della mappa */
+
+.current{
+    position:absolute;
+    z-index:15;
+    left:10px;
+    right:10px;
+    bottom:10px;
+    max-height:38%;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    background:#151515eb;
+    color:#fff;
+    border-radius:14px;
+    padding:4px;
+    font-size:.85rem;
+    line-height:1.3;
+    box-shadow:0 4px 14px #0006
+}
+
+.legend{
+    padding:8px 10px;
+    color:#d6d2cc;
+    font-size:.8rem
+}
+
+.stop{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    border:0;
+    background:none;
+    color:inherit;
+    text-align:left;
+    padding:7px 8px;
+    border-radius:10px
+}
+
+.stop+.stop{
+    border-top:1px solid #ffffff1a
+}
+
+.stop i{
+    flex:none;
+    display:grid;
+    place-items:center;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#e0a31a;
+    color:#111;
+    font:normal 900 .85rem system-ui,sans-serif
+}
+
+.stop b{
+    display:block;
+    color:#f0c25a
+}
+
+.stop small{
+    color:#d6d2cc
+}
+
+/* Zoom, sovrapposto alla mappa */
+
+.zoombar{
+    position:absolute;
+    z-index:15;
+    top:10px;
+    right:10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px
+}
+
+.zoom{
+    width:44px;
+    height:44px;
+    border:1px solid var(--border);
+    background:#fffffff0;
+    color:var(--text);
+    border-radius:12px;
+    font-size:1.25rem;
+    font-weight:700;
+    box-shadow:0 2px 8px #0005
+}
+
+.zoom:disabled{
+    opacity:.45;
+    cursor:default
 }
 
 /* Pietanze */
 
+#dishes-section{
+    display:flex;
+    flex-direction:column
+}
+
+#dishes,
+#empty{
+    flex:1;
+    min-height:0
+}
+
+#dishes{
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:6px
+}
+
 .dish{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    width:100%;
+    text-align:left;
+    color:inherit;
     background:#fff;
     border:1px solid var(--border);
     border-radius:14px;
-    padding:13px 14px;
-    margin:9px 0;
+    padding:14px;
+    margin:0 0 9px;
     cursor:pointer
 }
 
 .dish.active{
+    border-color:var(--red);
+    box-shadow:0 0 0 1px var(--red);
+    background:#fdf6f4
+}
+
+.dish .body{
+    flex:1;
+    min-width:0
+}
+
+/* Spunta: il cliente seleziona tutte le pietanze che ha comprato */
+.check{
+    flex:none;
+    width:26px;
+    height:26px;
+    margin-top:1px;
+    border:2px solid var(--border);
+    border-radius:8px;
+    background:#fff;
+    display:grid;
+    place-items:center
+}
+
+.dish.active .check{
+    background:var(--red);
     border-color:var(--red)
+}
+
+.dish.active .check::after{
+    content:"";
+    width:6px;
+    height:12px;
+    margin-top:-3px;
+    border:solid #fff;
+    border-width:0 3px 3px 0;
+    transform:rotate(45deg)
+}
+
+/* Numero identificativo della cantina */
+.where i{
+    display:inline-grid;
+    place-items:center;
+    min-width:20px;
+    height:20px;
+    padding:0 4px;
+    margin-right:3px;
+    border-radius:999px;
+    background:var(--red);
+    color:#fff;
+    font:normal 900 .72rem system-ui,sans-serif
+}
+
+/* Barra "Vedi sulla mappa" */
+
+.selbar{
+    flex:none;
+    display:flex;
+    gap:8px;
+    padding-top:8px
+}
+
+.selbar button{
+    border-radius:13px;
+    padding:13px 14px;
+    font-weight:800
+}
+
+.selbar .primary{
+    flex:1;
+    border:0;
+    background:var(--red);
+    color:#fff;
+    box-shadow:0 6px 18px #a33b2f55
+}
+
+.selbar .ghost{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--muted)
+}
+
+.badge{
+    display:inline-grid;
+    place-items:center;
+    min-width:20px;
+    height:20px;
+    padding:0 5px;
+    margin-left:4px;
+    border-radius:999px;
+    background:#e0a31a;
+    color:#111;
+    font-size:.72rem
 }
 
 .top{
@@ -295,10 +569,11 @@ main{
 .go{
     display:inline-block;
     color:var(--red);
-    font-size:.78rem;
+    font-size:.8rem;
     font-weight:800;
     text-decoration:none;
-    margin-top:8px
+    margin-top:8px;
+    padding:4px 0
 }
 
 .empty{
@@ -317,9 +592,10 @@ main{
     position:fixed;
     z-index:100;
     left:50%;
-    bottom:18px;
+    bottom:max(18px,env(safe-area-inset-bottom));
     transform:translate(-50%,20px);
     opacity:0;
+    max-width:calc(100% - 32px);
     background:#181818;
     color:#fff;
     border-radius:999px;
@@ -334,21 +610,74 @@ main{
     transform:translate(-50%,0)
 }
 
-/* Desktop */
+/* Smartphone: due schede a tutta altezza */
+
+@media(max-width:699px){
+
+    :root{
+        --gap:8px
+    }
+
+    header p{
+        display:none
+    }
+
+    .view-tabs{
+        flex:none;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:4px;
+        margin:8px max(8px,env(safe-area-inset-right)) 0 max(8px,env(safe-area-inset-left));
+        padding:4px;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:13px
+    }
+
+    body.show-dishes #map-section,
+    body:not(.show-dishes) #dishes-section{
+        display:none
+    }
+
+    .sect{
+        margin-top:12px
+    }
+
+    .dishname{
+        font-size:.95rem
+    }
+}
 
 @media(min-width:700px){
 
-    main{
-        padding-top:20px
+    .selbar .primary{
+        display:none
     }
 
-    .mapbox #viewport{
-        height:760px
+    .selbar{
+        justify-content:flex-end
+    }
+}
+
+/* Schermi grandi verticali (totem, tablet): mappa sopra, pietanze sotto */
+
+@media(min-width:700px) and (orientation:portrait){
+
+    main{
+        grid-template-rows:minmax(0,1fr) minmax(0,auto);
+        max-width:1100px;
+        margin:0 auto
+    }
+
+    #dishes-section{
+        max-height:36vh;
+        max-height:36dvh
     }
 
     #dishes{
         display:grid;
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+        align-content:start;
         gap:9px
     }
 
@@ -357,97 +686,84 @@ main{
     }
 }
 
-/* Smartphone */
+/* Schermi orizzontali (desktop, tablet e telefoni ruotati): pietanze a sinistra, mappa a destra */
 
-@media(max-width:699px){
+@media(min-width:700px) and (orientation:landscape){
 
     main{
-        padding-bottom:30px
+        grid-template-columns:minmax(280px,380px) minmax(0,1fr)
     }
 
-    /*
-     * Le due viste diventano vere e proprie schede.
-     */
-    .view-tabs{
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:4px;
-        position:sticky;
-        top:var(--mobile-tabs-top,72px);
-        z-index:9;
-        background:var(--bg);
-        padding:5px;
-        margin:0 0 8px;
-        border:1px solid var(--border);
-        border-radius:13px;
-        box-shadow:0 4px 14px #00000010
-    }
-
-    .view-tab{
-        font-size:.9rem
-    }
-
-    /*
-     * Di default su smartphone vediamo la mappa.
-     */
     #dishes-section{
-        display:none
-    }
-
-    #map-section{
-        display:block
-    }
-
-    /*
-     * Quando viene selezionata la modalità Pietanze,
-     * app.js aggiunge .show-dishes al body.
-     */
-    body.show-dishes #map-section{
-        display:none
-    }
-
-    body.show-dishes #dishes-section{
-        display:block
-    }
-
-    /*
-     * In modalità pietanze la ricerca rimane visibile:
-     * è utile per cercare velocemente un piatto.
-     */
-    body.show-dishes .search{
-        position:sticky;
-        top:var(--mobile-tabs-top,72px);
-    }
-
-    body.show-dishes .view-tabs{
-        top:var(--mobile-tabs-top,72px);
-    }
-
-    /*
-     * La mappa su telefono occupa quasi tutto lo spazio
-     * disponibile senza rendere la pagina interminabile.
-     */
-    .mapbox #viewport{
-        height:calc(100vh - 260px);
-        min-height:430px;
-        max-height:650px
+        order:-1
     }
 
     .sect{
-        margin-top:14px
+        margin-top:12px
+    }
+}
+
+/* Totem: testi e tocchi più grandi */
+
+@media(min-width:1000px) and (min-height:1600px){
+
+    html{
+        font-size:22px
     }
 
-    .dish{
-        margin:8px 0;
-        padding:14px
+    .search input{
+        font-size:1rem
     }
 
-    .dishname{
-        font-size:.95rem
+    .zoom{
+        width:64px;
+        height:64px;
+        font-size:1.6rem
     }
 
-    .where,
-    .desc{
-        font-size:.78rem
+    .marker{
+        width:38px;
+        height:38px
     }
+
+    .check{
+        width:34px;
+        height:34px
+    }
+}
+
+/* Schermi bassi (telefono ruotato): header compatto */
+
+@media(max-height:500px){
+
+    header{
+        padding-top:max(6px,env(safe-area-inset-top));
+        padding-bottom:6px
+    }
+
+    header small,
+    header p{
+        display:none
+    }
+
+    h1{
+        font-size:1.1rem
+    }
+
+    .sect{
+        display:none
+    }
+}
+
+/* Totem: niente selezione del testo né menu con la pressione prolungata */
+
+body.totem{
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none
+}
+
+body.totem input{
+    user-select:text;
+    -webkit-user-select:text
 }

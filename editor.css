@@ -276,8 +276,7 @@ input, select, textarea {
 
 .maparea #stage {
     position: relative;
-    width: 100%;
-    transform-origin: top left
+    margin: 0 auto
 }
 
 .maparea img {

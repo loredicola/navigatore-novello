@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="#151515">
     <title>Navigatore</title>
+    <link rel="preload" href="mappa-catignano.webp" as="image" fetchpriority="high">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="show-dishes">
 
 <header>
     <div>
@@ -15,68 +16,64 @@
         <h1 id="name"></h1>
         <p id="subtitle"></p>
     </div>
-    <button id="locate" aria-label="La mia posizione">⌖</button>
 </header>
+
+<!-- Navigazione mobile -->
+<nav class="view-tabs" aria-label="Navigazione">
+    <button id="tab-map" class="view-tab" type="button">
+        🗺️ Mappa <span id="tab-count" class="badge hidden"></span>
+    </button>
+    <button id="tab-dishes" class="view-tab active" type="button">
+        🍴 Pietanze
+    </button>
+</nav>
 
 <main>
 
-    <section class="search">
-        <label>
-            ⌕
-            <input id="search" type="search" placeholder="Cerca una pietanza...">
-            <button id="clear">×</button>
-        </label>
-        <div id="filters"></div>
-    </section>
-
-    <!-- Navigazione mobile -->
-    <nav class="view-tabs" aria-label="Navigazione">
-        <button id="tab-map" class="view-tab active" type="button">
-            🗺️ Mappa
-        </button>
-        <button id="tab-dishes" class="view-tab" type="button">
-            🍴 Pietanze
-        </button>
-    </nav>
-
-    <section id="map-section" class="mapbox">
-        <div class="sect">
-            <div>
-                <small>DOVE TROVARLA</small>
-                <h2>Mappa delle postazioni</h2>
-            </div>
-
-            <div>
-                <button class="zoom" id="minus">−</button>
-                <button class="zoom" id="reset">100%</button>
-                <button class="zoom" id="plus">+</button>
-            </div>
-        </div>
-
+    <section id="map-section" class="mapbox" aria-label="Mappa delle postazioni">
         <div id="viewport">
             <div id="stage">
-                <img id="map" alt="Mappa delle postazioni">
+                <img id="map" alt="Mappa delle postazioni" draggable="false" decoding="async">
                 <div id="markers"></div>
             </div>
         </div>
 
-        <p class="hint">
-            Tocca una postazione oppure una pietanza.
-            Puoi ingrandire la mappa.
-        </p>
+        <div id="maploading" class="maploading">Caricamento mappa…</div>
+
+        <div id="current" class="current" aria-live="polite"></div>
+
+        <div class="zoombar">
+            <button class="zoom" id="plus" type="button" aria-label="Ingrandisci">+</button>
+            <button class="zoom" id="reset" type="button" aria-label="Mostra tutta la mappa">⤢</button>
+            <button class="zoom" id="minus" type="button" aria-label="Riduci">−</button>
+        </div>
     </section>
 
     <section id="dishes-section">
+        <div class="search">
+            <label>
+                ⌕
+                <input id="search" type="search" placeholder="Cerca una pietanza..." autocomplete="off">
+                <button id="clear" type="button" aria-label="Cancella ricerca">×</button>
+            </label>
+            <div id="filters"></div>
+        </div>
+
         <div class="sect">
             <div>
                 <small>MENU</small>
-                <h2>Pietanze</h2>
+                <h2>Cosa hai preso?</h2>
             </div>
             <span id="count"></span>
         </div>
 
         <div id="dishes"></div>
-        <div id="empty" class="empty">Nessuna pietanza trovata.</div>
+        <div id="empty" class="empty hidden">Nessuna pietanza trovata.</div>
+
+        <div id="selbar" class="selbar hidden">
+            <button id="clearsel" type="button" class="ghost">Azzera</button>
+            <button id="showmap" type="button" class="primary"></button>
+        </div>
     </section>
 
 </main>
