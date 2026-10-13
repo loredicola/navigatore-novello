@@ -217,6 +217,8 @@ main>section{
     position:absolute;
     inset:0;
     display:flex;
+    flex-direction:column;
+    align-items:center;
     overflow:auto;
     overscroll-behavior:contain;
     touch-action:pan-x pan-y; /* il pinch lo gestisce app.js */
@@ -227,7 +229,15 @@ main>section{
 .mapbox #stage{
     position:relative;
     flex:none;
-    margin:auto
+    margin:0 auto
+}
+
+.mapbox #viewport::after{
+    content:"";
+    display:block;
+    flex:none;
+    width:1px;
+    height:var(--scroll-extra, 0px)
 }
 
 .mapbox img{

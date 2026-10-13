@@ -130,7 +130,8 @@
             $('tab-count').textContent = g;
             $('tab-count').classList.toggle('hidden', !g);
             renderMarkers();
-            renderCurrent()
+            renderCurrent();
+            vp.style.setProperty('--scroll-extra', `${$('current').offsetHeight}px`)
         }
 
         function toggle(id) {
@@ -315,6 +316,7 @@
         img.src = FESTA.mappa?.immagine || 'mappa-catignano.webp';
         // Rotazione / barra del browser: ricalcola le dimensioni mantenendo il centro
         new ResizeObserver(() => {
+            vp.style.setProperty('--scroll-extra', `${$('current').offsetHeight}px`);
             start();
             if (started) zoom(s.zoom)
         }).observe(vp);
