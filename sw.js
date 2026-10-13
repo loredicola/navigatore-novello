@@ -1,11 +1,8 @@
 /*
- * Service worker: alla prima apertura salva sul telefono tutti i file del navigatore.
- * Dalle aperture successive la pagina parte subito dalla cache anche senza rete,
- * e in background scarica le versioni aggiornate (si vedono all'apertura dopo).
- *
- * Se cambi i file e vuoi forzare l'aggiornamento, incrementa VERSION.
+ * Service worker: prova prima a caricare la versione dal server e la salva
+ * nella cache. Se il server non è raggiungibile, usa la copia offline.
  */
-const VERSION = 'novello-v4';
+const VERSION = 'novello-v5';
 const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'config.js', 'mappa-catignano.webp'];
 
 self.addEventListener('install', e => {
@@ -24,16 +21,17 @@ self.addEventListener('fetch', e => {
     if (e.request.method !== 'GET' || url.origin !== location.origin || url.pathname.includes('editor') || e.request.referrer.includes('editor')) return;
     // index.html?totem=... usa la stessa copia in cache di index.html
     let key = e.request.mode === 'navigate' ? new Request(url.pathname) : e.request;
-    e.respondWith(caches.open(VERSION).then(async c => {
-        let cached = await c.match(key, {ignoreSearch: true});
-        let fresh = fetch(e.request).then(r => {
-            if (r.ok) c.put(key, r.clone());
-            return r
-        });
-        if (cached) {
-            e.waitUntil(fresh.catch(() => null));
-            return cached
+    e.respondWith((async () => {
+        let c = await caches.open(VERSION);
+        try {
+            // Chiede al browser di ricontrollare la risposta HTTP in cache.
+            let response = await fetch(e.request, {cache: 'no-cache'});
+            if (response.ok) await c.put(key, response.clone());
+            return response
+        } catch (err) {
+            let cached = await c.match(key, {ignoreSearch: true});
+            if (cached) return cached;
+            throw err
         }
-        return fresh
-    }))
+    })())
 });
