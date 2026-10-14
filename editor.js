@@ -1,5 +1,5 @@
 const EDITOR_USERNAME = 'admin';
-const EDITOR_PASSWORD = 'catignano';
+const EDITOR_PASSWORD = 'ProLocoCatignano2026';
 
 (() => {
     const login = document.getElementById('login');

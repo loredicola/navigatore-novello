@@ -193,6 +193,13 @@ main>section{
     margin:2px 0
 }
 
+.wine-note{
+    margin:3px 0 0;
+    color:#a65636;
+    font: 700 1.2rem Georgia, serif;
+    font-weight:700
+}
+
 #count{
     color:var(--muted);
     font-size:.85rem
@@ -210,15 +217,13 @@ main>section{
 }
 
 /*
- * Il viewport è un flex container: con margin:auto lo stage
- * resta centrato quando è più piccolo, e scorre quando è più grande.
+ * I margini automatici centrano lo stage quando entra nel viewport;
+ * quando è più largo, lo stage parte dal bordo e può scorrere.
  */
 .mapbox #viewport{
     position:absolute;
     inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+    display:block;
     overflow:auto;
     overscroll-behavior:contain;
     touch-action:pan-x pan-y; /* il pinch lo gestisce app.js */

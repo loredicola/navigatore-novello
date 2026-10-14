@@ -300,19 +300,28 @@ input, select, textarea {
 
 .marker {
     position: absolute;
-    width: 46px;
-    height: 46px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
     transform: translate(-50%, -50%);
-    border: 3px solid #fff;
+    border: 2px solid #fff;
     border-radius: 50%;
     background: var(--red);
     color: #fff;
-    box-shadow: 0 3px 13px #000a;
+    box-shadow: 0 2px 8px #0008;
+    font-size: .8rem;
     font-weight: 900;
     cursor: grab;
     touch-action: none;
     pointer-events: auto;
     z-index: 6
+}
+
+.marker::before {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
 }
 
 .marker.sel {

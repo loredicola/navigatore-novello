@@ -190,10 +190,20 @@
             renderSelection()
         }
 
+        // Coordinate dello stage nello spazio scorrevole del viewport.
+        function stagePosition() {
+            let vr = vp.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+            return {
+                left: sr.left - vr.left - vp.clientLeft + vp.scrollLeft,
+                top: sr.top - vr.top - vp.clientTop + vp.scrollTop
+            }
+        }
+
         function centerOn(p, smooth) {
             if (!p) return;
-            let x = (+p.x || 0) / 100 * stage.offsetWidth + stage.offsetLeft;
-            let y = (+p.y || 0) / 100 * stage.offsetHeight + stage.offsetTop;
+            let pos = stagePosition();
+            let x = (+p.x || 0) / 100 * stage.offsetWidth + pos.left;
+            let y = (+p.y || 0) / 100 * stage.offsetHeight + pos.top;
             // Il riquadro delle postazioni copre il fondo della mappa: alziamo un po' il centro
             let cover = $('current').offsetHeight / 2;
             vp.scrollTo({left: x - vp.clientWidth / 2, top: y - (vp.clientHeight - cover) / 2, behavior: smooth ? 'smooth' : 'auto'})
@@ -208,9 +218,13 @@
             let f = fitWidth(), ratio = imgRatio(), cover = $('current').offsetHeight;
             let zx = (vp.clientWidth - 80) / ((x1 - x0) * f);
             let zy = (vp.clientHeight - cover - 100) / ((y1 - y0) * f / ratio);
-            let z = Math.min(zx, zy, Math.max(2, startZoom()));
+            // Centriamo la cartina sull'asse X; riduciamo lo zoom se serve a
+            // lasciare visibili anche le cantine selezionate più laterali.
+            let xRadius = Math.max(Math.abs(x0 - .5), Math.abs(x1 - .5));
+            let zCentered = xRadius ? (vp.clientWidth / 2 - 40) / (xRadius * f) : Infinity;
+            let z = Math.min(zx, zy, zCentered, Math.max(2, startZoom()));
             zoom(Math.max(1, z));
-            centerOn({x: (x0 + x1) * 50, y: (y0 + y1) * 50}, smooth)
+            centerOn({x: 50, y: (y0 + y1) * 50}, smooth)
         }
 
         /*
@@ -225,10 +239,10 @@
             return Math.min(vp.clientWidth, vp.clientHeight * imgRatio())
         }
 
-        // Zoom iniziale: riempie la larghezza, ma senza superare il doppio della vista intera
+        // Zoom iniziale: applica un incremento, equivalente a un click sul pulsante +.
         function startZoom() {
             let f = fitWidth();
-            return f ? Math.min(2, vp.clientWidth / f) : 1
+            return f ? Math.min(MAX_ZOOM, Math.min(2, vp.clientWidth / f) * 1.4) : 1
         }
 
         function layout() {
@@ -238,13 +252,14 @@
         // Zooma mantenendo fermo il punto (cx, cy) del viewport (di default il centro)
         function zoom(z, cx = vp.clientWidth / 2, cy = vp.clientHeight / 2) {
             z = Math.max(1, Math.min(MAX_ZOOM, z));
-            let w = stage.offsetWidth, h = stage.offsetHeight;
-            let rx = w ? (vp.scrollLeft + cx - stage.offsetLeft) / w : .5;
-            let ry = h ? (vp.scrollTop + cy - stage.offsetTop) / h : .5;
+            let w = stage.offsetWidth, h = stage.offsetHeight, pos = stagePosition();
+            let rx = w ? (vp.scrollLeft + cx - pos.left) / w : .5;
+            let ry = h ? (vp.scrollTop + cy - pos.top) / h : .5;
             s.zoom = z;
             layout();
-            vp.scrollLeft = rx * stage.offsetWidth + stage.offsetLeft - cx;
-            vp.scrollTop = ry * stage.offsetHeight + stage.offsetTop - cy;
+            pos = stagePosition();
+            vp.scrollLeft = rx * stage.offsetWidth + pos.left - cx;
+            vp.scrollTop = ry * stage.offsetHeight + pos.top - cy;
             $('minus').disabled = z <= 1;
             $('plus').disabled = z >= MAX_ZOOM
         }
