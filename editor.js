@@ -57,6 +57,10 @@ const EDITOR_PASSWORD = 'catignano';
         return p.numero ?? d.postazioni.indexOf(p) + 1
     }
 
+    function standIds(x) {
+        return Array.isArray(x.postazione) ? x.postazione : (x.postazione ? [x.postazione] : [])
+    }
+
     function render() {
         $('ename').value = d.nome || '';
         $('eyear').value = d.anno || '';
@@ -84,8 +88,8 @@ const EDITOR_PASSWORD = 'catignano';
 
     function renderDishes() {
         $('dishes').innerHTML = d.pietanze.map(x => {
-            let p = d.postazioni.find(y => y.id === x.postazione);
-            return `<div class="item"><div><b>${esc(x.nome)}</b><div class="meta">${esc(x.categoria || '')} · ${esc(p?.nome || 'Nessuna cantina')}</div></div><div><button class="mini editdish" data-id="${esc(x.id)}">✎</button><button class="mini danger deldish" data-id="${esc(x.id)}">×</button></div></div>`
+            let ps = standIds(x).map(id => d.postazioni.find(y => y.id === id)).filter(Boolean);
+            return `<div class="item"><div><b>${esc(x.nome)}</b><div class="meta">${esc(x.categoria || '')} · ${ps.length ? ps.map(p => esc(p.nome)).join(', ') : 'Nessuna cantina'}</div></div><div><button class="mini editdish" data-id="${esc(x.id)}">✎</button><button class="mini danger deldish" data-id="${esc(x.id)}">×</button></div></div>`
         }).join('');
         document.querySelectorAll('.editdish').forEach(b => b.onclick = () => dishModal(b.dataset.id));
         document.querySelectorAll('.deldish').forEach(b => b.onclick = () => delDish(b.dataset.id))
@@ -172,10 +176,11 @@ const EDITOR_PASSWORD = 'catignano';
             nome: '',
             categoria: '',
             descrizione: '',
-            postazione: d.postazioni[0]?.id || ''
+            postazione: d.postazioni[0]?.id ? [d.postazioni[0].id] : []
         };
+        let assigned = standIds(x);
         $('mtitle').textContent = id ? 'Modifica pietanza' : 'Nuova pietanza';
-        fields.innerHTML = `<label>Nome<input name="name" required value="${escA(x.nome)}"></label><label>ID tecnico<input name="id" required value="${escA(x.id)}" ${id ? 'readonly' : ''}></label><label>Categoria<input name="cat" value="${escA(x.categoria || '')}"></label><label>Descrizione<textarea name="desc" rows="3">${esc(x.descrizione || '')}</textarea></label><label>Cantina di ritiro<select name="stand"><option value="">Nessuna</option>${d.postazioni.map(p => `<option value="${escA(p.id)}" ${p.id === x.postazione ? 'selected' : ''}>Cantina ${num(p)} · ${esc(p.nome)}</option>`).join('')}</select></label>`;
+        fields.innerHTML = `<label>Nome<input name="name" required value="${escA(x.nome)}"></label><label>ID tecnico<input name="id" required value="${escA(x.id)}" ${id ? 'readonly' : ''}></label><label>Categoria<input name="cat" value="${escA(x.categoria || '')}"></label><label>Descrizione<textarea name="desc" rows="3">${esc(x.descrizione || '')}</textarea></label><div class="stand-choices"><b>Cantine di ritiro</b><small>Puoi selezionarne più di una.</small>${d.postazioni.map(p => `<label><input type="checkbox" name="stands" value="${escA(p.id)}" ${assigned.includes(p.id) ? 'checked' : ''}> Cantina ${num(p)} · ${esc(p.nome)}</label>`).join('')}</div>`;
         modal.dataset.type = 'dish';
         modal.dataset.id = id || '';
         modal.classList.remove('hidden')
@@ -201,7 +206,7 @@ const EDITOR_PASSWORD = 'catignano';
                 nome: String(f.get('name')).trim(),
                 categoria: String(f.get('cat')).trim(),
                 descrizione: String(f.get('desc')).trim(),
-                postazione: String(f.get('stand') || '')
+                postazione: f.getAll('stands').map(String)
             };
             if (id) Object.assign(d.pietanze.find(y => y.id === id), x); else d.pietanze.push(x)
         }
@@ -229,7 +234,7 @@ const EDITOR_PASSWORD = 'catignano';
         if (!confirm(`Eliminare "${p.nome}"?`)) return;
         d.postazioni = d.postazioni.filter(x => x.id !== id);
         d.pietanze.forEach(x => {
-            if (x.postazione === id) x.postazione = ''
+            x.postazione = standIds(x).filter(standId => standId !== id)
         });
         sel = d.postazioni[0]?.id || null;
         render()

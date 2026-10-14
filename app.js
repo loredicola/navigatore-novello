@@ -38,6 +38,10 @@
             return FESTA.postazioni.find(x => x.id === id)
         }
 
+        function standIds(d) {
+            return Array.isArray(d.postazione) ? d.postazione : (d.postazione ? [d.postazione] : [])
+        }
+
         // Ogni pallino è una cantina con un numero identificativo univoco.
         function num(p) {
             return p.numero ?? FESTA.postazioni.indexOf(p) + 1
@@ -51,10 +55,14 @@
         function selected() {
             let m = new Map();
             s.sel.forEach(id => {
-                let d = dish(id), p = d && stand(d.postazione);
-                if (!p) return;
-                if (!m.has(p.id)) m.set(p.id, {p, dishes: []});
-                m.get(p.id).dishes.push(d)
+                let d = dish(id);
+                if (!d) return;
+                standIds(d).forEach(standId => {
+                    let p = stand(standId);
+                    if (!p) return;
+                    if (!m.has(p.id)) m.set(p.id, {p, dishes: []});
+                    m.get(p.id).dishes.push(d)
+                })
             });
             return [...m.values()].sort((a, b) => num(a.p) - num(b.p))
         }
@@ -75,7 +83,7 @@
         function renderMarkers() {
             let active = new Set(selected().map(x => x.p.id));
             markers.innerHTML = FESTA.postazioni.map(p => {
-                let ds = FESTA.pietanze.filter(d => d.postazione === p.id).map(d => d.nome);
+                let ds = FESTA.pietanze.filter(d => standIds(d).includes(p.id)).map(d => d.nome);
                 let side = (+p.x || 0) < 24 ? 'bubble-left' : (+p.x || 0) > 76 ? 'bubble-right' : '';
                 let vertical = (+p.y || 0) > 68 ? 'bubble-above' : '';
                 return `<button type="button" class="marker ${active.has(p.id) ? 'active' : ''} ${s.peek === p.id ? 'peek' : ''} ${side} ${vertical}" style="left:${+p.x || 0}%;top:${+p.y || 0}%" data-id="${esc(p.id)}" aria-label="Cantina ${num(p)}: ${esc(p.nome)}">${num(p)}<span class="marker-info"><b>Cantina ${num(p)} · ${esc(p.nome)}</b>${ds.length ? `<small>${ds.map(esc).join(', ')}</small>` : '<small>Nessuna pietanza</small>'}</span></button>`
@@ -115,9 +123,9 @@
             $('count').textContent = `${ds.length} ${ds.length === 1 ? 'pietanza' : 'pietanze'}`;
             $('empty').classList.toggle('hidden', ds.length > 0);
             $('dishes').innerHTML = ds.map(d => {
-                let p = stand(d.postazione), on = s.sel.has(d.id),
+                let ps = standIds(d).map(stand).filter(Boolean), p = ps[0], on = s.sel.has(d.id),
                     go = p && p.lat != null && p.lng != null ? `<a class="go" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.lat + ',' + p.lng + ' (' + p.nome + ')')}">↗ Come arrivare</a>` : '';
-                return `<article class="dish ${on ? 'active' : ''}" data-id="${esc(d.id)}" role="checkbox" aria-checked="${on}" tabindex="0"><span class="check" aria-hidden="true"></span><div class="body"><div class="top"><div class="dishname">${esc(d.nome)}</div><div class="cat">${esc(d.categoria || '')}</div></div><div class="where">${p ? `<i>${num(p)}</i> Cantina · ${esc(p.nome)}` : '📍 Cantina non configurata'}</div>${d.descrizione ? `<div class="desc">${esc(d.descrizione)}</div>` : ''}${go}</div></article>`
+                return `<article class="dish ${on ? 'active' : ''}" data-id="${esc(d.id)}" role="checkbox" aria-checked="${on}" tabindex="0"><span class="check" aria-hidden="true"></span><div class="body"><div class="top"><div class="dishname">${esc(d.nome)}</div><div class="cat">${esc(d.categoria || '')}</div></div><div class="where">${ps.length ? ps.map(x => `<i>${num(x)}</i> Cantina · ${esc(x.nome)}`).join(' / ') : '📍 Cantina non configurata'}</div>${d.descrizione ? `<div class="desc">${esc(d.descrizione)}</div>` : ''}${go}</div></article>`
             }).join('');
             document.querySelectorAll('.dish').forEach(e => {
                 e.onclick = ev => {
@@ -146,7 +154,7 @@
         function toggle(id) {
             let d = dish(id);
             if (!d) return;
-            if (!stand(d.postazione)) return toast('Questa pietanza non ha una cantina configurata.');
+            if (!standIds(d).some(stand)) return toast('Questa pietanza non ha una cantina configurata.');
             s.sel.has(id) ? s.sel.delete(id) : s.sel.add(id);
             s.peek = null;
             save();

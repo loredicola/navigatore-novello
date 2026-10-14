@@ -204,6 +204,11 @@ input, select, textarea {
     background: #fff
 }
 
+.stand-choices{margin:12px 0;color:var(--muted);font-size:.8rem}
+.stand-choices>small{display:block;margin:3px 0 8px}
+.stand-choices label{display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:500}
+.stand-choices input{width:auto;margin:0}
+
 .item {
     border: 1px solid var(--border);
     border-radius: 10px;

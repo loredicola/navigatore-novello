@@ -59,8 +59,8 @@ const FESTA={
             "id": "P06",
             "nome": "La cantina de l'abate",
             "numero": 6,
-            "x": 53.35,
-            "y": 42.61,
+            "x": 47.01,
+            "y": 51.72,
             "lat": null,
             "lng": null
         },
@@ -254,6 +254,16 @@ const FESTA={
             "categoria": "secondi",
             "descrizione": "",
             "postazione": "P13"
+        },
+        {
+            "id": "Vino bottiglia",
+            "nome": "Vino bottiglia",
+            "categoria": "Vino bottiglia",
+            "descrizione": "",
+            "postazione": [
+                "P07",
+                "P11"
+            ]
         }
     ]
 };
