@@ -258,7 +258,7 @@ const FESTA={
         {
             "id": "Vino bottiglia",
             "nome": "Vino bottiglia",
-            "categoria": "Vino bottiglia",
+            "categoria": "vino bottiglia",
             "descrizione": "",
             "postazione": [
                 "P07",
