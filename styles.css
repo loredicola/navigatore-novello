@@ -297,17 +297,27 @@ main>section{
 
 .marker span{
     position:absolute;
-    top:calc(100% + 6px);
+    top:calc(100% + 10px);
     left:50%;
     transform:translateX(-50%);
-    background:#111e;
+    width:max-content;
+    max-width:min(280px, 68vw);
+    box-sizing:border-box;
+    background:#181818f5;
     color:#fff;
-    border-radius:8px;
-    padding:4px 7px;
-    font-size:.68rem;
-    white-space:nowrap;
+    border:1px solid #ffffff40;
+    border-radius:12px;
+    padding:10px 13px;
+    font-size:.9rem;
+    line-height:1.35;
+    text-align:left;
+    white-space:normal;
+    box-shadow:0 5px 20px #0009;
     opacity:0;
-    pointer-events:none
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .18s, visibility .18s;
+    z-index:20
 }
 
 .marker.active span,
@@ -315,6 +325,25 @@ main>section{
 .marker.peek{
     z-index:11
 }
+
+.marker.peek .marker-info{
+    opacity:1;
+    visibility:visible
+}
+
+.marker-info b,
+.marker-info small{display:block}
+.marker-info small{margin-top:4px;color:#eee;font-size:.82rem}
+.marker.bubble-left .marker-info{left:0;transform:none}
+.marker.bubble-right .marker-info{left:auto;right:0;transform:none}
+.marker.bubble-above .marker-info{top:auto;bottom:calc(100% + 10px)}
+/* Il pallino attivo si ingrandisce, ma il banner mantiene la misura normale. */
+.marker.active .marker-info{transform:translateX(-50%) scale(.76923);transform-origin:top center}
+.marker.active.bubble-left .marker-info{transform:scale(.76923);transform-origin:top left}
+.marker.active.bubble-right .marker-info{transform:scale(.76923);transform-origin:top right}
+.marker.active.bubble-above .marker-info{transform-origin:bottom center}
+.marker.active.bubble-left.bubble-above .marker-info{transform-origin:bottom left}
+.marker.active.bubble-right.bubble-above .marker-info{transform-origin:bottom right}
 
 /* Mappa in caricamento (rete lenta) */
 

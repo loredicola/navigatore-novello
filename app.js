@@ -3,6 +3,7 @@
         const s = {q: '', cat: 'Tutte', zoom: 1, sel: new Set(), peek: null};
         const vp = $('viewport'), stage = $('stage'), markers = $('markers'), img = $('map');
         const MAX_ZOOM = 4;
+        let peekTimer;
         const mobile = () => matchMedia('(max-width:699px)').matches;
 
         // Modalità totem attivabile con index.html?totem
@@ -73,7 +74,12 @@
 
         function renderMarkers() {
             let active = new Set(selected().map(x => x.p.id));
-            markers.innerHTML = FESTA.postazioni.map(p => `<button type="button" class="marker ${active.has(p.id) ? 'active' : ''} ${s.peek === p.id ? 'peek' : ''}" style="left:${+p.x || 0}%;top:${+p.y || 0}%" data-id="${esc(p.id)}" aria-label="Cantina ${num(p)}: ${esc(p.nome)}">${num(p)}<span>${esc(p.nome)}</span></button>`).join('');
+            markers.innerHTML = FESTA.postazioni.map(p => {
+                let ds = FESTA.pietanze.filter(d => d.postazione === p.id).map(d => d.nome);
+                let side = (+p.x || 0) < 24 ? 'bubble-left' : (+p.x || 0) > 76 ? 'bubble-right' : '';
+                let vertical = (+p.y || 0) > 68 ? 'bubble-above' : '';
+                return `<button type="button" class="marker ${active.has(p.id) ? 'active' : ''} ${s.peek === p.id ? 'peek' : ''} ${side} ${vertical}" style="left:${+p.x || 0}%;top:${+p.y || 0}%" data-id="${esc(p.id)}" aria-label="Cantina ${num(p)}: ${esc(p.nome)}">${num(p)}<span class="marker-info"><b>Cantina ${num(p)} · ${esc(p.nome)}</b>${ds.length ? `<small>${ds.map(esc).join(', ')}</small>` : '<small>Nessuna pietanza</small>'}</span></button>`
+            }).join('');
             document.querySelectorAll('button.marker').forEach(b => b.onclick = () => peek(b.dataset.id))
         }
 
@@ -81,9 +87,12 @@
         function peek(id) {
             let p = stand(id);
             s.peek = s.peek === id ? null : id;
+            clearTimeout(peekTimer);
             renderMarkers();
-            let ds = FESTA.pietanze.filter(d => d.postazione === id).map(d => d.nome);
-            if (s.peek) toast(`Cantina ${num(p)} · ${p.nome}${ds.length ? ': ' + ds.join(', ') : ''}`)
+            if (s.peek) peekTimer = setTimeout(() => {
+                s.peek = null;
+                renderMarkers()
+            }, 5000)
         }
 
         function renderCurrent() {
