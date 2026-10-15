@@ -24,7 +24,12 @@ const FESTA={
                 },
                 {
                     "inizio": "22:51",
-                    "fine": "23:45",
+                    "fine": "23:10",
+                    "band": "Nuova band"
+                },
+                {
+                    "inizio": "23:10",
+                    "fine": "23:20",
                     "band": "Nuova band"
                 }
             ]

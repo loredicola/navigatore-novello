@@ -4,15 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="#151515">
-    <title>Musica live</title>
+    <title>Spettacoli live</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body{overflow:hidden}
         header a{color:white;text-decoration:none;border:1px solid #ffffff55;border-radius:10px;padding:9px 12px;font-weight:700;white-space:nowrap}
-        main{flex:1;min-height:0;padding:10px}
-        #map-section{height:100%;min-height:0;display:flex;flex-direction:column;background:#090909;border-radius:14px;overflow:hidden}
-        #viewport{flex:1;min-height:0;overflow:auto;display:flex;align-items:flex-start;justify-content:center}
-        #stage{position:relative;flex:none}
+        main{display:flex;flex-direction:column;flex:1;min-height:0;width:100%;padding:10px}
+        #map-section{position:relative;flex:1;width:100%;min-height:0;display:flex;flex-direction:column;background:#090909;border-radius:14px;overflow:hidden}
+        #viewport{flex:1;width:100%;min-height:0;overflow:auto;display:flex;align-items:flex-start;justify-content:flex-start}
+        #stage{position:relative;flex:none;margin:0 auto}
         #map{display:block;width:100%;height:auto;user-select:none}
         #markers{position:absolute;inset:0}
         .music-marker{position:absolute;display:grid;place-items:center;transform:translate(-50%,-50%);width:36px;height:36px;padding:0;border:2px solid #fff;border-radius:50%;background:#777;color:#fff;font-size:.68rem;font-weight:900;line-height:1;box-shadow:0 2px 9px #0009;z-index:2}
@@ -29,25 +29,49 @@
         .live-item .venue{color:#e7d4bd}
         .live-item time{color:#ddd;font-variant-numeric:tabular-nums;white-space:nowrap}
         .empty-live{grid-column:1/-1;color:#c8c2bc;font-size:.8rem}
+        .zoombar{position:absolute;z-index:10;top:10px;right:10px;display:flex;flex-direction:column;gap:6px}
+        .zoom{width:44px;height:44px;border:1px solid #ded9d1;background:#fffffff0;color:#1d1c1a;border-radius:12px;font-size:1.25rem;font-weight:700;box-shadow:0 2px 8px #0005}
+        .zoom:disabled{opacity:.45;cursor:default}
+        .program-popup{position:absolute;right:0;top:calc(100% + 8px);width:min(370px,calc(100vw - 36px));max-height:min(52vh,520px);overflow:auto;padding:12px;border:1px solid #ffffff38;border-radius:13px;background:#171615f5;color:#fff;box-shadow:0 5px 22px #000a}
+        .program-head{position:sticky;top:-12px;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:8px;margin:-12px -12px 9px;padding:12px;background:#24211ff5;border-radius:12px 12px 0 0}
+        .program-head strong{font-size:.9rem}.program-head small{display:block;color:#c8c2bc;font-size:.7rem;margin-top:2px}
+        .program-close{width:32px;height:32px;border:0;border-radius:8px;background:#ffffff18;color:white;font-size:1.25rem}
+        .program-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:7px;padding:8px 2px;border-bottom:1px solid #ffffff18}
+        .program-ref{display:grid;place-items:center;width:30px;height:24px;border-radius:7px;background:#218c4c;color:white;font-size:.66rem;font-weight:900}
+        .program-main{min-width:0}.program-main b,.program-main small{display:block;overflow-wrap:anywhere}.program-main b{font-size:.8rem}.program-main small{color:#c8c2bc;font-size:.68rem;margin-top:2px}
+        .program-side{display:grid;justify-items:end;gap:3px}.program-side time{font-size:.7rem;color:#ddd;font-variant-numeric:tabular-nums;white-space:nowrap}
+        .program-status{font-size:.58rem;font-weight:900;letter-spacing:.07em;white-space:nowrap}.program-status.active{color:#ff6860}.program-status.upcoming{color:#ffcf69}.program-status.past{color:#a9a49d}
+        .program-empty{padding:8px 2px;color:#c8c2bc;font-size:.8rem}
         @keyframes halo{50%{transform:scale(1.3);opacity:.25}}
-        @media(max-width:699px){main{padding:6px}.music-marker{width:34px;height:34px}.music-info{gap:5px 10px;padding:8px 10px}.live-list{max-height:17vh;gap:5px 10px}.live-item{min-width:100%;font-size:.78rem}}
+        @media(min-width:700px){.music-marker{width:40px;height:40px;font-size:.76rem}}
+        @media(min-width:1000px) and (min-height:1600px){.music-marker{width:52px;height:52px;font-size:.82rem}.music-marker.playing:after{inset:-11px}}
+        @media(min-width:1000px) and (min-height:1600px){.zoom{width:64px;height:64px;font-size:1.6rem}}
+        @media(max-width:699px){main{padding:6px}.music-marker{width:34px;height:34px}.music-info{gap:5px 10px;padding:8px 10px}.live-list{max-height:17vh;gap:5px 10px}.live-item{min-width:100%;font-size:.78rem}.program-popup{width:min(330px,calc(100vw - 28px));padding:10px}.program-head{margin:-10px -10px 8px;padding:10px}.program-row{grid-template-columns:31px minmax(0,1fr) auto;gap:5px}.program-main b{font-size:.74rem}.program-main small{font-size:.64rem}.program-side time{font-size:.65rem}}
     </style>
 </head>
 <body>
 <header>
-    <div><small id="year"></small><h1>🎵 Musica live</h1><p id="event"></p></div>
+    <div><small id="year"></small><h1>🎭🎵 Spettacoli live</h1><p id="event"></p></div>
     <a href="index.html">← Mappa cantine</a>
 </header>
 <main>
     <section id="map-section" aria-label="Mappa dei punti musica">
         <div id="viewport"><div id="stage"><img id="map" alt="Mappa dei punti musica"><div id="markers"></div></div></div>
         <div id="current" class="music-info" aria-live="polite"></div>
+        <div class="zoombar" aria-label="Controlli zoom mappa">
+            <button class="zoom" id="music-plus" type="button" aria-label="Ingrandisci">+</button>
+            <button class="zoom" id="music-reset" type="button" aria-label="Ripristina zoom">⤢</button>
+            <button class="zoom" id="music-minus" type="button" aria-label="Riduci">−</button>
+            <button class="zoom" id="program-button" type="button" aria-label="Apri programmazione" aria-expanded="false">📅</button>
+            <div id="program-popup" class="program-popup hidden" role="dialog" aria-label="Programmazione degli spettacoli"></div>
+        </div>
     </section>
 </main>
 <script src="config.js"></script>
 <script>
 (() => {
     const $=id=>document.getElementById(id), points=FESTA.puntiMusica||[], vp=$('viewport'), stage=$('stage'), img=$('map');
+    let baseWidth=0, zoom=1, popupTimer=null;
     $('year').textContent=FESTA.anno;
     $('event').textContent=FESTA.nome;
     img.src=FESTA.mappa?.immagine||'mappa-catignano.webp';
@@ -66,11 +90,61 @@
     }
     function resize(){
         const ratio=img.naturalWidth&&img.naturalHeight?img.naturalWidth/img.naturalHeight:480/1960;
-        stage.style.width=Math.min(vp.clientWidth,vp.clientHeight*ratio)+'px';
+        let width;
+        if(matchMedia('(max-width:699px)').matches){
+            // Sul telefono manteniamo la mappa intera, come nella vista già approvata.
+            width=Math.min(vp.clientWidth,vp.clientHeight*ratio);
+        }else if(matchMedia('(min-width:1000px) and (min-height:1600px)').matches){
+            // Totem verticale: quasi tutta la larghezza, con altezza contenuta nello schermo.
+            width=Math.min(vp.clientWidth*.88,vp.clientHeight*ratio);
+        }else{
+            // Desktop: la mappa occupa tutta la larghezza; si scorre solo in verticale.
+            width=vp.clientWidth;
+        }
+        baseWidth=width;
+        stage.style.width=baseWidth*zoom+'px';
+        updateZoomButtons();
     }
     img.onload=resize;
     addEventListener('resize',resize);
     function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+    function closeProgram(){
+        clearTimeout(popupTimer);popupTimer=null;
+        $('program-popup').classList.add('hidden');
+        $('program-button').setAttribute('aria-expanded','false');
+    }
+    function openProgram(){
+        const popup=$('program-popup'),now=new Date(),current=now.getHours()*60+now.getMinutes();
+        const rows=points.flatMap((point,index)=>{
+            const active=activeShow(point,now);
+            return (point.programma||[]).map(show=>{
+                const start=minutes(show.inizio),isActive=show===active;
+                const startsAfterMidnight=current>=22*60&&start<3*60;
+                const past=start!==null&&!isActive&&start<current&&!startsAfterMidnight;
+                return{point,index,show,start,status:isActive?'active':past?'past':'upcoming'};
+            }).filter(row=>row.start!==null);
+        }).sort((a,b)=>a.start-b.start||a.index-b.index);
+        popup.innerHTML=`<div class="program-head"><div><strong>Programmazione spettacoli</strong><small>Orari di tutti i punti musica</small></div><button class="program-close" type="button" aria-label="Chiudi">×</button></div>${rows.length?rows.map(({point,index,show,status})=>`<div class="program-row"><span class="program-ref">M${index+1}</span><div class="program-main"><b>${esc(show.band)}</b><small>${esc(point.nome)}</small></div><div class="program-side"><span class="program-status ${status}">${status==='active'?'● LIVE':status==='past'?'CONCLUSO':'IN PROGRAMMA'}</span><time>${esc(show.inizio)}–${esc(show.fine)}</time></div></div>`).join(''):'<div class="program-empty">Nessun evento configurato.</div>'}`;
+        popup.classList.remove('hidden');
+        $('program-button').setAttribute('aria-expanded','true');
+        popup.querySelector('.program-close').onclick=closeProgram;
+        clearTimeout(popupTimer);popupTimer=setTimeout(closeProgram,8000);
+    }
+    function updateZoomButtons(){
+        $('music-minus').disabled=zoom<=1;
+        $('music-plus').disabled=zoom>=4;
+    }
+    function setZoom(value){
+        const oldWidth=stage.offsetWidth||baseWidth, oldHeight=stage.offsetHeight;
+        const centerX=vp.scrollLeft+vp.clientWidth/2,centerY=vp.scrollTop+vp.clientHeight/2;
+        const xRatio=oldWidth?centerX/oldWidth:.5,yRatio=oldHeight?centerY/oldHeight:.5;
+        zoom=Math.max(1,Math.min(4,value));
+        stage.style.width=baseWidth*zoom+'px';
+        requestAnimationFrame(()=>{
+            vp.scrollTo({left:Math.max(0,xRatio*stage.offsetWidth-vp.clientWidth/2),top:Math.max(0,yRatio*stage.offsetHeight-vp.clientHeight/2),behavior:'smooth'});
+            updateZoomButtons();
+        });
+    }
 
     function render(){
         const now=new Date(), live=points.map((point,index)=>({point,index,show:activeShow(point,now)})).filter(item=>item.show);
@@ -81,6 +155,10 @@
         $('current').innerHTML=`<span class="live-label"><i></i>Live in corso</span><span class="music-clock">${now.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</span>${live.length?`<div class="live-list">${live.map(({point,index,show})=>`<div class="live-item"><span class="live-ref">M${index+1}</span><b>${esc(show.band)}</b><span class="venue">· ${esc(point.nome)}</span><time>${esc(show.inizio)}–${esc(show.fine)}</time></div>`).join('')}</div>`:'<div class="empty-live">Nessun live in corso</div>'}`;
     }
     render();
+    $('music-plus').onclick=()=>setZoom(zoom*1.4);
+    $('music-minus').onclick=()=>setZoom(zoom/1.4);
+    $('music-reset').onclick=()=>setZoom(1);
+    $('program-button').onclick=()=>{$('program-popup').classList.contains('hidden')?openProgram():closeProgram()};
     setInterval(render,30000);
 })();
 </script>
