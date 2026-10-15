@@ -31,7 +31,7 @@
 </div>
 <header>
     <div><small>EDITOR ANNUALE</small>
-        <h1>Cantine e pietanze</h1></div>
+        <h1>Cantine, pietanze e musica</h1></div>
     <div class="actions">
         <button id="import">Importa config</button>
         <button id="export">Esporta config.js</button>
@@ -51,6 +51,11 @@
             </div>
             <p>Ogni pallino è una cantina. Assegna un numero diverso a ciascuna: il numero identifica la cantina.</p>
             <div id="stands"></div>
+        </section>
+        <section class="panel">
+            <div class="title"><div><small>MUSICA LIVE</small><h2>Punti e scaletta</h2></div><button id="addmusic">+</button></div>
+            <p>Imposta i punti sulla mappa e una band per riga nel formato HH:MM-HH:MM | Nome band.</p>
+            <div id="musicpoints"></div>
         </section>
         <section class="panel">
             <div class="title">
@@ -78,7 +83,7 @@
                 <div id="markers"></div>
             </div>
         </div>
-        <p>Le coordinate X/Y vengono aggiornate automaticamente trascinando i pallini.</p></section>
+        <p>I pallini rossi sono le cantine; quelli verdi, numerati M1, M2… sono i punti musica e corrispondono all'elenco a sinistra. Seleziona un punto dall'elenco per centrarlo sulla mappa. Trascina qualsiasi pallino per cambiarne la posizione.</p></section>
 </main>
 <div id="modal" class="hidden">
     <div class="card">

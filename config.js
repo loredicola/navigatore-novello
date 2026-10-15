@@ -5,6 +5,85 @@ const FESTA={
     "mappa": {
         "immagine": "mappa-catignano.webp"
     },
+    "puntiMusica": [
+        {
+            "id": "M01",
+            "nome": "San Francesco",
+            "x": 47.55,
+            "y": 88.13,
+            "programma": [
+                {
+                    "inizio": "20:30",
+                    "fine": "22:30",
+                    "band": "Free Jazz Souls"
+                },
+                {
+                    "inizio": "22:30",
+                    "fine": "22:51",
+                    "band": "Hobos Street Band"
+                },
+                {
+                    "inizio": "22:51",
+                    "fine": "23:45",
+                    "band": "Nuova band"
+                }
+            ]
+        },
+        {
+            "id": "M02",
+            "nome": "Piazza Marconi",
+            "x": 48.44,
+            "y": 38.44,
+            "programma": [
+                {
+                    "inizio": "21:00",
+                    "fine": "22:00",
+                    "band": "Gli Svitati"
+                },
+                {
+                    "inizio": "22:30",
+                    "fine": "23:00",
+                    "band": "Spettacolo"
+                },
+                {
+                    "inizio": "23:00",
+                    "fine": "23:59",
+                    "band": "Altro Live"
+                }
+            ]
+        },
+        {
+            "id": "M03",
+            "nome": "Piazzetta Irene",
+            "x": 59.14,
+            "y": 24.95,
+            "programma": [
+                {
+                    "inizio": "20:00",
+                    "fine": "23:00",
+                    "band": "Norman Sax"
+                }
+            ]
+        },
+        {
+            "id": "M04",
+            "nome": "Piazzetta del Castello",
+            "x": 55.72,
+            "y": 18.5,
+            "programma": [
+                {
+                    "inizio": "21:00",
+                    "fine": "21:30",
+                    "band": "Hobos Street Band"
+                },
+                {
+                    "inizio": "21:30",
+                    "fine": "23:59",
+                    "band": "Open MIC"
+                }
+            ]
+        }
+    ],
     "postazioni": [
         {
             "id": "P01",

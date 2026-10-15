@@ -2,8 +2,8 @@
  * Service worker: prova prima a caricare la versione dal server e la salva
  * nella cache. Se il server non è raggiungibile, usa la copia offline.
  */
-const VERSION = 'novello-v7';
-const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'config.js', 'mappa-catignano.webp'];
+const VERSION = 'novello-v20';
+const FILES = ['./', 'index.html', 'musica.html', 'styles.css', 'app.js', 'config.js', 'mappa-catignano.webp'];
 
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()))

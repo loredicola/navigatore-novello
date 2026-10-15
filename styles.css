@@ -53,6 +53,9 @@ header{
     gap:10px
 }
 
+.music-link{color:#21180a;text-decoration:none;border:1px solid #f1c15a;border-radius:10px;padding:9px 12px;background:#e0a31a;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px #0004}
+.music-link:hover{background:#f0b832}
+
 header div{
     min-width:0
 }
@@ -170,7 +173,10 @@ main>section{
     color:var(--muted);
     font-weight:800;
     padding:10px 8px;
-    border-radius:10px
+    border-radius:10px;
+    text-align:center;
+    text-decoration:none;
+    display:block
 }
 
 .view-tab.active{
@@ -688,6 +694,7 @@ main>section{
         border:1px solid var(--border);
         border-radius:13px
     }
+
 
     body.show-dishes #map-section,
     body:not(.show-dishes) #dishes-section{
