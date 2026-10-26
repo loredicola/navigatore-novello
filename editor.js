@@ -105,7 +105,7 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
              style="left:${n(p.x)}%;top:${n(p.y)}%">
         ${num(p)}
      </button>`
-        ).join('') + d.puntiMusica.map((p,i)=>`<button class="marker music-marker ${p.id===selMusic?'sel':''}" data-kind="music" data-id="${esc(p.id)}" style="left:${n(p.x)}%;top:${n(p.y)}%" title="Musica ${i+1}: ${esc(p.nome)}">M${i+1}</button>`).join('');
+        ).join('') + d.puntiMusica.filter(p=>!p.streetBand).map((p)=>{const i=d.puntiMusica.indexOf(p);return `<button class="marker music-marker ${p.id===selMusic?'sel':''}" data-kind="music" data-id="${esc(p.id)}" style="left:${n(p.x)}%;top:${n(p.y)}%" title="Musica ${i+1}: ${esc(p.nome)}">M${i+1}</button>`}).join('');
         document.querySelectorAll('.marker').forEach(b => {
             b.onclick = () => b.dataset.kind === 'music' ? selectMusic(b.dataset.id) : select(b.dataset.id);
             b.onpointerdown = startDrag
@@ -113,14 +113,14 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
     }
 
     function renderMusic(){
-        $('musicpoints').innerHTML=d.puntiMusica.map((p,i)=>`<div class="item ${p.id===selMusic?'sel':''}" data-music-id="${esc(p.id)}"><div><b><i class="music-key">M${i+1}</i> ${esc(p.nome)}</b><div class="meta">X ${n(p.x).toFixed(1)}% · Y ${n(p.y).toFixed(1)}% · ${(p.programma||[]).map(x=>`${esc(x.inizio)}–${esc(x.fine)} ${esc(x.band)}`).join(' · ')||'Nessuna band in programma'}</div></div><div><button class="mini editmusic" data-id="${esc(p.id)}">✎</button><button class="mini danger delmusic" data-id="${esc(p.id)}">×</button></div></div>`).join('');
+        $('musicpoints').innerHTML=d.puntiMusica.map((p,i)=>`<div class="item ${p.id===selMusic?'sel':''}" data-music-id="${esc(p.id)}"><div><b><i class="music-key">M${i+1}</i> ${esc(p.nome)}</b><div class="meta">X ${n(p.x).toFixed(1)}% · Y ${n(p.y).toFixed(1)}% · ${p.streetBand?'Street band · ':''}${(p.programma||[]).map(x=>`${x.giorno?`${x.giorno==='venerdi'?'Ven':'Sab'} `:''}${esc(x.inizio)}–${esc(x.fine)} ${esc(x.band)}`).join(' · ')||'Nessuna band in programma'}</div></div><div><button class="mini editmusic" data-id="${esc(p.id)}">✎</button><button class="mini danger delmusic" data-id="${esc(p.id)}">×</button></div></div>`).join('');
         document.querySelectorAll('#musicpoints .item').forEach(e=>e.onclick=ev=>{if(!ev.target.closest('button'))selectMusic(e.dataset.musicId)});
         document.querySelectorAll('.editmusic').forEach(b=>b.onclick=()=>musicModal(b.dataset.id));
         document.querySelectorAll('.delmusic').forEach(b=>b.onclick=()=>{let p=d.puntiMusica.find(x=>x.id===b.dataset.id);if(confirm(`Eliminare il punto musica "${p.nome}"?`)){d.puntiMusica=d.puntiMusica.filter(x=>x!==p);if(selMusic===p.id)selMusic=null;render()}})
     }
 
     function selectMusic(id){selMusic=id;sel=null;renderMusic();renderMarkers();label();let p=d.puntiMusica.find(x=>x.id===id);if(p)vp.scrollTo({left:Math.max(0,n(p.x)/100*stage.clientWidth-vp.clientWidth/2),top:Math.max(0,n(p.y)/100*stage.clientHeight-vp.clientHeight/2),behavior:'smooth'})}
-    function musicModal(id){let index=d.puntiMusica.length,p=id?d.puntiMusica.find(x=>x.id===id):{id:`M${String(index+1).padStart(2,'0')}`,nome:'Nuovo punto musica',x:clamp(30+(index%5)*10,0,100),y:clamp(25+(index%7)*8,0,100),programma:[]};let schedule=(p.programma||[]).map(x=>`${x.inizio}-${x.fine} | ${x.band}`).join('\n');$('mtitle').textContent=id?'Modifica punto musica':'Nuovo punto musica';fields.innerHTML=`<label>Nome del punto<input name="name" required value="${esc(p.nome)}"></label><label>Scaletta (una band per riga: HH:MM-HH:MM | Nome band)<textarea name="schedule" rows="7" placeholder="20:00-21:30 | Nome band">${esc(schedule)}</textarea></label>`;modal.dataset.type='music';modal.dataset.id=id||p.id;modal.dataset.new=id?'':'1';modal.classList.remove('hidden')}
+    function musicModal(id){let index=d.puntiMusica.length,p=id?d.puntiMusica.find(x=>x.id===id):{id:`M${String(index+1).padStart(2,'0')}`,nome:'Nuovo punto musica',x:clamp(30+(index%5)*10,0,100),y:clamp(25+(index%7)*8,0,100),programma:[]};let schedule=(p.programma||[]).map(x=>`${x.giorno?`${x.giorno==='venerdi'?'ven':'sab'} `:''}${x.inizio}-${x.fine} | ${x.band}`).join('\n');$('mtitle').textContent=id?'Modifica punto musica':'Nuovo punto musica';fields.innerHTML=`<label>Nome del punto<input name="name" required value="${esc(p.nome)}"></label><div class="stand-choices"><label><input type="checkbox" name="streetBand" ${p.streetBand?'checked':''}> Street band itinerante (nascondi il pallino sulla mappa)</label></div><label>Scaletta (una band per riga: ven/sab HH:MM-HH:MM | Nome band)<textarea name="schedule" rows="7" placeholder="ven 20:00-21:30 | Nome band&#10;sab 22:00-00:30 | Altra band">${esc(schedule)}</textarea><small>Gli orari dopo mezzanotte restano associati alla serata di partenza. Senza ven/sab, la riga vale per entrambe le serate.</small></label>`;modal.dataset.type='music';modal.dataset.id=id||p.id;modal.dataset.new=id?'':'1';modal.classList.remove('hidden')}
 
     function select(id) {
         sel = id; selMusic=null;
@@ -208,7 +208,8 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
             let p=d.puntiMusica.find(x=>x.id===id);
             if(!p){p={id,nome:'',x:50,y:50,programma:[]};d.puntiMusica.push(p)}
             p.nome=String(f.get('name')).trim()||'Punto musica';
-            p.programma=String(f.get('schedule')||'').split(/\r?\n/).map(line=>{let m=line.match(/^\s*(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})\s*\|\s*(.+?)\s*$/);return m?{inizio:m[1].padStart(5,'0'),fine:m[2].padStart(5,'0'),band:m[3]}:null}).filter(Boolean);
+            p.streetBand=f.get('streetBand')==='on';
+            p.programma=String(f.get('schedule')||'').split(/\r?\n/).map(line=>{let m=line.match(/^\s*(?:(ven(?:erd[iì])?|sab(?:ato)?)\s+)?(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})\s*\|\s*(.+?)\s*$/i);return m?{...(m[1]?{giorno:(/^ven/i.test(m[1])?'venerdi':'sabato')}:{}),inizio:m[2].padStart(5,'0'),fine:m[3].padStart(5,'0'),band:m[4]}:null}).filter(Boolean);
             selMusic=id;sel=null;
         } else if (type === 'stand') {
             let p = d.postazioni.find(x => x.id === id);

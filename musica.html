@@ -81,11 +81,19 @@
         return match?Number(match[1])*60+Number(match[2]):null;
     }
     function activeShow(point,now){
-        const current=now.getHours()*60+now.getMinutes();
+        const current=now.getHours()*60+now.getMinutes(), weekday=now.getDay();
+        const today=weekday===5?'venerdi':weekday===6?'sabato':null;
+        const previous=weekday===6?'venerdi':weekday===0?'sabato':null;
         return (point.programma||[]).find(show=>{
             const start=minutes(show.inizio),end=minutes(show.fine);
             if(start===null||end===null)return false;
-            return start<=end?current>=start&&current<end:current>=start||current<end;
+            if(show.giorno){
+                if(show.giorno===today && current>=start)return start<=end?current<end:true;
+                return show.giorno===previous && current<end && (start>=end || start===0);
+            }
+            // Legacy entries remain valid on both nights. A 00:00 start is not
+            // treated as active throughout the evening before it begins.
+            return start<=end?current>=start&&current<end:(current>=start||current<end);
         });
     }
     function resize(){
@@ -119,12 +127,29 @@
             const active=activeShow(point,now);
             return (point.programma||[]).map(show=>{
                 const start=minutes(show.inizio),isActive=show===active;
-                const startsAfterMidnight=current>=22*60&&start<3*60;
-                const past=start!==null&&!isActive&&start<current&&!startsAfterMidnight;
+                let past=false;
+                if(!isActive&&start!==null){
+                    if(show.giorno){
+                        const targetDay=show.giorno==='venerdi'?5:6;
+                        const startDate=new Date(now);
+                        startDate.setHours(0,0,0,0);
+                        startDate.setDate(startDate.getDate()+((targetDay-startDate.getDay()+7)%7));
+                        // Gli orari tra mezzanotte e le 05:59 appartengono alla notte iniziata il giorno prima.
+                        if(start<6*60)startDate.setDate(startDate.getDate()+1);
+                        startDate.setMinutes(start);
+                        const endDate=new Date(startDate);
+                        if(minutes(show.fine)<=start)endDate.setDate(endDate.getDate()+1);
+                        endDate.setHours(Math.floor(minutes(show.fine)/60),minutes(show.fine)%60,0,0);
+                        past=now>=endDate;
+                    }else{
+                        const endsAfterMidnight=minutes(show.fine)<start;
+                        past=start<current&&!(endsAfterMidnight&&current<minutes(show.fine));
+                    }
+                }
                 return{point,index,show,start,status:isActive?'active':past?'past':'upcoming'};
             }).filter(row=>row.start!==null);
         }).sort((a,b)=>a.start-b.start||a.index-b.index);
-        popup.innerHTML=`<div class="program-head"><div><strong>Programmazione spettacoli</strong><small>Orari di tutti i punti musica</small></div><button class="program-close" type="button" aria-label="Chiudi">×</button></div>${rows.length?rows.map(({point,index,show,status})=>`<div class="program-row"><span class="program-ref">M${index+1}</span><div class="program-main"><b>${esc(show.band)}</b><small>${esc(point.nome)}</small></div><div class="program-side"><span class="program-status ${status}">${status==='active'?'● LIVE':status==='past'?'CONCLUSO':'IN PROGRAMMA'}</span><time>${esc(show.inizio)}–${esc(show.fine)}</time></div></div>`).join(''):'<div class="program-empty">Nessun evento configurato.</div>'}`;
+        popup.innerHTML=`<div class="program-head"><div><strong>Programmazione spettacoli</strong><small>Orari di tutti i punti musica</small></div><button class="program-close" type="button" aria-label="Chiudi">×</button></div>${rows.length?rows.map(({point,index,show,status})=>`<div class="program-row"><span class="program-ref">M${index+1}</span><div class="program-main"><b>${esc(show.band)}</b><small>${show.giorno?`${show.giorno==='venerdi'?'Venerdì':'Sabato'} · `:''}${esc(point.nome)}</small></div><div class="program-side"><span class="program-status ${status}">${status==='active'?'● LIVE':status==='past'?'CONCLUSO':'IN PROGRAMMA'}</span><time>${esc(show.inizio)}–${esc(show.fine)}</time></div></div>`).join(''):'<div class="program-empty">Nessun evento configurato.</div>'}`;
         popup.classList.remove('hidden');
         $('program-button').setAttribute('aria-expanded','true');
         popup.querySelector('.program-close').onclick=closeProgram;
@@ -150,6 +175,7 @@
         const now=new Date(), live=points.map((point,index)=>({point,index,show:activeShow(point,now)})).filter(item=>item.show);
         $('markers').innerHTML=points.map((point,index)=>{
             const show=activeShow(point,now),ref=`M${index+1}`;
+            if(point.streetBand)return '';
             return `<div class="music-marker ${show?'playing':''}" style="left:${Number(point.x)||0}%;top:${Number(point.y)||0}%" aria-label="${esc(show?`${ref}, ${show.band}, ${point.nome}, ${show.inizio}–${show.fine}`:`${ref}, ${point.nome}`)}">${ref}</div>`;
         }).join('');
         $('current').innerHTML=`<span class="live-label"><i></i>Live in corso</span><span class="music-clock">${now.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</span>${live.length?`<div class="live-list">${live.map(({point,index,show})=>`<div class="live-item"><span class="live-ref">M${index+1}</span><b>${esc(show.band)}</b><span class="venue">· ${esc(point.nome)}</span><time>${esc(show.inizio)}–${esc(show.fine)}</time></div>`).join('')}</div>`:'<div class="empty-live">Nessun live in corso</div>'}`;

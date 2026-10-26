@@ -14,77 +14,108 @@ const FESTA={
             "programma": [
                 {
                     "inizio": "20:30",
-                    "fine": "22:30",
-                    "band": "Free Jazz Souls"
+                    "fine": "22:00",
+                    "giorno": "venerdi",
+                    "band": "Very Norman People"
                 },
                 {
-                    "inizio": "22:30",
-                    "fine": "22:51",
-                    "band": "Hobos Street Band"
+                    "inizio": "22:00",
+                    "fine": "23:59",
+                    "giorno": "venerdi",
+                    "band": "M.A.D"
                 },
                 {
-                    "inizio": "22:51",
-                    "fine": "23:10",
-                    "band": "Nuova band"
+                    "inizio": "00:01",
+                    "fine": "01:30",
+                    "giorno": "venerdi",
+                    "band": "Zinharua"
                 },
                 {
-                    "inizio": "23:10",
-                    "fine": "23:20",
-                    "band": "Nuova band"
+                    "inizio": "01:30",
+                    "fine": "04:00",
+                    "giorno": "venerdi",
+                    "band": "Nunzio Karaoke vs Loer - Big 90 - DJ set"
                 }
             ]
         },
         {
             "id": "M02",
-            "nome": "Piazza Marconi",
+            "nome": "Marconi",
             "x": 48.44,
             "y": 38.44,
             "programma": [
                 {
                     "inizio": "21:00",
-                    "fine": "22:00",
-                    "band": "Gli Svitati"
+                    "fine": "22:30",
+                    "giorno": "venerdi",
+                    "band": "The Svitati"
                 },
                 {
                     "inizio": "22:30",
                     "fine": "23:00",
-                    "band": "Spettacolo"
+                    "giorno": "venerdi",
+                    "band": "Pigus - Ardetia"
                 },
                 {
                     "inizio": "23:00",
                     "fine": "23:59",
-                    "band": "Altro Live"
+                    "giorno": "venerdi",
+                    "band": "The Svitati"
                 }
             ]
         },
         {
             "id": "M03",
-            "nome": "Piazzetta Irene",
+            "nome": "Castello 2",
             "x": 59.14,
             "y": 24.95,
             "programma": [
                 {
                     "inizio": "20:00",
                     "fine": "23:00",
+                    "giorno": "venerdi",
                     "band": "Norman Sax"
                 }
             ]
         },
         {
             "id": "M04",
-            "nome": "Piazzetta del Castello",
+            "nome": "Castello 1",
             "x": 55.72,
             "y": 18.5,
             "programma": [
                 {
+                    "inizio": "21:30",
+                    "fine": "23:59",
+                    "giorno": "venerdi",
+                    "band": "Open MIC"
+                }
+            ]
+        },
+        {
+            "id": "M05",
+            "nome": "Itinerante",
+            "streetBand": true,
+            "x": 44.63,
+            "y": 43.84,
+            "programma": [
+                {
                     "inizio": "21:00",
                     "fine": "21:30",
+                    "giorno": "venerdi",
                     "band": "Hobos Street Band"
                 },
                 {
-                    "inizio": "21:30",
-                    "fine": "23:59",
-                    "band": "Open MIC"
+                    "inizio": "22:30",
+                    "fine": "23:00",
+                    "giorno": "venerdi",
+                    "band": "Hobos Street Band"
+                },
+                {
+                    "inizio": "23:59",
+                    "fine": "01:30",
+                    "giorno": "venerdi",
+                    "band": "Hobos Street Band - Psylocibe Lunar Cirko"
                 }
             ]
         }
@@ -94,21 +125,21 @@ const FESTA={
             "id": "P01",
             "nome": "Mastro Bancone",
             "cassa": 1,
-            "x": 52.73,
-            "y": 13.64,
-            "lat": null,
-            "lng": null,
-            "numero": 1
-        },
-        {
-            "id": "P02",
-            "nome": "Vini Top",
-            "cassa": 2,
-            "x": 64.18,
-            "y": 19.18,
+            "x": 52.45,
+            "y": 14.43,
             "lat": null,
             "lng": null,
             "numero": 2
+        },
+        {
+            "id": "P02",
+            "nome": "Cantina del Cavaliere",
+            "cassa": 2,
+            "x": 65.42,
+            "y": 18.11,
+            "lat": null,
+            "lng": null,
+            "numero": 3
         },
         {
             "id": "P03",
@@ -118,7 +149,7 @@ const FESTA={
             "y": 27.59,
             "lat": null,
             "lng": null,
-            "numero": 3
+            "numero": 5
         },
         {
             "id": "P04",
@@ -128,12 +159,12 @@ const FESTA={
             "y": 29.08,
             "lat": null,
             "lng": null,
-            "numero": 4
+            "numero": 6
         },
         {
             "id": "P05",
-            "nome": "Rivotiche",
-            "numero": 5,
+            "nome": "La Pnnos",
+            "numero": 7,
             "x": 52.35,
             "y": 35.35,
             "lat": null,
@@ -142,16 +173,16 @@ const FESTA={
         {
             "id": "P06",
             "nome": "La cantina de l'abate",
-            "numero": 6,
-            "x": 52.58,
-            "y": 51.68,
+            "numero": 8,
+            "x": 51.17,
+            "y": 47.55,
             "lat": null,
             "lng": null
         },
         {
             "id": "P07",
             "nome": "Mastro Italino",
-            "numero": 7,
+            "numero": 9,
             "x": 56.16,
             "y": 49.29,
             "lat": null,
@@ -160,16 +191,16 @@ const FESTA={
         {
             "id": "P08",
             "nome": "Mastro Berrett",
-            "numero": 8,
-            "x": 56.8,
-            "y": 55.19,
+            "numero": 10,
+            "x": 56.73,
+            "y": 53.42,
             "lat": null,
             "lng": null
         },
         {
             "id": "P09",
-            "nome": "La cantin de lu prit",
-            "numero": 9,
+            "nome": "La Cantin de lu Prit",
+            "numero": 12,
             "x": 42.03,
             "y": 60.58,
             "lat": null,
@@ -178,7 +209,7 @@ const FESTA={
         {
             "id": "P10",
             "nome": "Zio Camilluccio",
-            "numero": 10,
+            "numero": 13,
             "x": 53.95,
             "y": 67.8,
             "lat": null,
@@ -187,16 +218,16 @@ const FESTA={
         {
             "id": "P11",
             "nome": "Lu scatenat",
-            "numero": 11,
-            "x": 50.98,
-            "y": 76.44,
+            "numero": 14,
+            "x": 50.73,
+            "y": 74.77,
             "lat": null,
             "lng": null
         },
         {
             "id": "P12",
             "nome": "Nonna Maria",
-            "numero": 12,
+            "numero": 15,
             "x": 44.78,
             "y": 77.44,
             "lat": null,
@@ -205,9 +236,36 @@ const FESTA={
         {
             "id": "P13",
             "nome": "La cantina di Cirich",
-            "numero": 13,
+            "numero": 16,
             "x": 53.28,
             "y": 82.65,
+            "lat": null,
+            "lng": null
+        },
+        {
+            "id": "P14",
+            "nome": "Mastro Fox",
+            "numero": 11,
+            "x": 42.46,
+            "y": 52.51,
+            "lat": null,
+            "lng": null
+        },
+        {
+            "id": "P16",
+            "nome": "Spazio Loco",
+            "numero": 4,
+            "x": 52.7,
+            "y": 25.34,
+            "lat": null,
+            "lng": null
+        },
+        {
+            "id": "P17",
+            "nome": "Zia Emmuccia",
+            "numero": 1,
+            "x": 55.88,
+            "y": 10.66,
             "lat": null,
             "lng": null
         }
@@ -218,126 +276,162 @@ const FESTA={
             "nome": "Rape e fagioli",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P01"
+            "postazione": [
+                "P01"
+            ]
         },
         {
             "id": "Formaggio alla piastra",
             "nome": "Formaggio alla piastra",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P01"
+            "postazione": [
+                "P01"
+            ]
         },
         {
             "id": "fiadoni",
             "nome": "Fiadoni",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P02"
+            "postazione": [
+                "P02"
+            ]
         },
         {
             "id": "Panino con salsiccia",
             "nome": "Panino con salsiccia",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P03"
+            "postazione": [
+                "P03"
+            ]
         },
         {
             "id": "Arrosticini",
             "nome": "Arrosticini",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P04"
+            "postazione": [
+                "P04"
+            ]
         },
         {
             "id": "Rivotiche",
             "nome": "Rivotiche",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P05"
+            "postazione": [
+                "P05"
+            ]
         },
         {
             "id": "Tortello cremasco",
             "nome": "Tortello cremasco",
             "categoria": "primi",
             "descrizione": "",
-            "postazione": "P06"
+            "postazione": [
+                "P06"
+            ]
         },
         {
             "id": "Bruschetta alici e mozzerella",
             "nome": "Bruschetta alici e mozzerella",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P08"
+            "postazione": [
+                "P08"
+            ]
         },
         {
             "id": "Strozza preti",
             "nome": "Strozza preti",
             "categoria": "primi",
             "descrizione": "",
-            "postazione": "P09"
+            "postazione": [
+                "P09"
+            ]
         },
         {
             "id": "Sagne e fagioli",
             "nome": "Sagne e fagioli",
             "categoria": "primi",
             "descrizione": "",
-            "postazione": "P09"
+            "postazione": [
+                "P09"
+            ]
         },
         {
             "id": "Cipollata",
             "nome": "Cipollata",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P09"
+            "postazione": [
+                "P09"
+            ]
         },
         {
             "id": "Formaggio pastellato",
             "nome": "Formaggio pastellato",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P09"
+            "postazione": [
+                "P09"
+            ]
         },
         {
             "id": "Panino con porchetta",
             "nome": "Panino con porchetta",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P10"
+            "postazione": [
+                "P10"
+            ]
         },
         {
             "id": "neole",
             "nome": "Neole",
             "categoria": "dolci",
             "descrizione": "",
-            "postazione": "P11"
+            "postazione": [
+                "P11"
+            ]
         },
         {
             "id": "mandorle",
             "nome": "Mandorle",
             "categoria": "dolci",
             "descrizione": "",
-            "postazione": "P11"
+            "postazione": [
+                "P11"
+            ]
         },
         {
             "id": "Castagne",
             "nome": "Castagne",
             "categoria": "dolci",
             "descrizione": "",
-            "postazione": "P12"
+            "postazione": [
+                "P12"
+            ]
         },
         {
             "id": "pizza fritta",
             "nome": "Pizza fritta",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P13"
+            "postazione": [
+                "P13"
+            ]
         },
         {
             "id": "patatine fritte",
             "nome": "Patatine fritte",
             "categoria": "secondi",
             "descrizione": "",
-            "postazione": "P13"
+            "postazione": [
+                "P13"
+            ]
         },
         {
             "id": "Vino bottiglia",

@@ -10,7 +10,7 @@ Progetto completamente statico: nessun database, backend o servizio di mappe est
 - `mappa-catignano.png`: mappa grafica fornita
 
 ## Uso annuale
-Apri `editor.html`, modifica evento, postazioni, pietanze e punti musica. Trascina i pallini sulla mappa. Per ogni punto musica aggiungi una riga nel formato `20:00-21:30 | Nome band`. Premi **Esporta config.js** e sostituisci il vecchio `config.js` nella pubblicazione. La pagina musicale confronta gli orari con l'ora locale del dispositivo e aggiorna i marker ogni 30 secondi.
+Apri `editor.html`, modifica evento, postazioni, pietanze e punti musica. Trascina i pallini sulla mappa. Per ogni punto musica aggiungi una riga nel formato `ven 20:00-21:30 | Nome band` oppure `sab 22:00-00:30 | Nome band`; gli orari dopo mezzanotte appartengono alla serata indicata. Puoi omettere `ven`/`sab` per una riga valida in entrambe le serate. Premi **Esporta config.js** e sostituisci il vecchio `config.js` nella pubblicazione. La pagina musicale confronta gli orari con l'ora locale del dispositivo e aggiorna i marker ogni 30 secondi.
 
 ## Pubblicazione
 Metti nella stessa cartella almeno `index.html`, `musica.html`, `config.js`, `app.js`, `styles.css` e `mappa-catignano.webp`. `editor.html`, `editor.js` ed `editor.css` possono essere tenuti anche solo sul PC dell'organizzazione.
