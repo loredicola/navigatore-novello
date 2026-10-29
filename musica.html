@@ -123,9 +123,12 @@
     }
     function openProgram(){
         const popup=$('program-popup'),now=new Date(),current=now.getHours()*60+now.getMinutes();
+        const weekday=now.getDay();
+        const visibleDay=weekday===5?'venerdi':weekday===6?'sabato':null;
         const rows=points.flatMap((point,index)=>{
             const active=activeShow(point,now);
             return (point.programma||[]).map(show=>{
+                if(visibleDay&&show.giorno&&show.giorno!==visibleDay)return null;
                 const start=minutes(show.inizio),isActive=show===active;
                 let past=false;
                 if(!isActive&&start!==null){
@@ -147,7 +150,7 @@
                     }
                 }
                 return{point,index,show,start,status:isActive?'active':past?'past':'upcoming'};
-            }).filter(row=>row.start!==null);
+            }).filter(row=>row&&row.start!==null);
         }).sort((a,b)=>a.start-b.start||a.index-b.index);
         popup.innerHTML=`<div class="program-head"><div><strong>Programmazione spettacoli</strong><small>Orari di tutti i punti musica</small></div><button class="program-close" type="button" aria-label="Chiudi">×</button></div>${rows.length?rows.map(({point,index,show,status})=>`<div class="program-row"><span class="program-ref">M${index+1}</span><div class="program-main"><b>${esc(show.band)}</b><small>${show.giorno?`${show.giorno==='venerdi'?'Venerdì':'Sabato'} · `:''}${esc(point.nome)}</small></div><div class="program-side"><span class="program-status ${status}">${status==='active'?'● LIVE':status==='past'?'CONCLUSO':'IN PROGRAMMA'}</span><time>${esc(show.inizio)}–${esc(show.fine)}</time></div></div>`).join(''):'<div class="program-empty">Nessun evento configurato.</div>'}`;
         popup.classList.remove('hidden');
