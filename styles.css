@@ -679,6 +679,25 @@ main>section{
         --gap:8px
     }
 
+    header{
+        align-items:flex-start
+    }
+
+    header>div{
+        flex:1;
+        min-width:0
+    }
+
+    header>a{
+        align-self:center
+    }
+
+    h1{
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip
+    }
+
     header p{
         display:none
     }
