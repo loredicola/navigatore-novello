@@ -317,6 +317,8 @@
 
         if (totem) {
             document.body.classList.add('totem');
+            const musicLink = document.querySelector('.music-link');
+            if (musicLink) musicLink.href = 'musica.html?totem';
             let idle;
             const wake = () => {
                 clearTimeout(idle);

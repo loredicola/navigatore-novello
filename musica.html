@@ -72,6 +72,20 @@
 (() => {
     const $=id=>document.getElementById(id), points=FESTA.puntiMusica||[], vp=$('viewport'), stage=$('stage'), img=$('map');
     let baseWidth=0, zoom=1, popupTimer=null;
+    const totem=new URLSearchParams(location.search).has('totem');
+    if(totem){
+        document.body.classList.add('totem');
+        const IDLE_MS=60000;
+        let idleTimer;
+        const wake=()=>{
+            clearTimeout(idleTimer);
+            idleTimer=setTimeout(()=>location.href='index.html?totem',IDLE_MS);
+        };
+        ['pointerdown','keydown','input','wheel'].forEach(type=>addEventListener(type,wake,{passive:true}));
+        addEventListener('scroll',wake,{passive:true,capture:true});
+        wake();
+        document.querySelector('header a').href='index.html?totem';
+    }
     $('year').textContent=FESTA.anno;
     $('event').textContent=FESTA.nome;
     img.src=FESTA.mappa?.immagine||'mappa-catignano.webp';
@@ -121,6 +135,11 @@
         $('program-popup').classList.add('hidden');
         $('program-button').setAttribute('aria-expanded','false');
     }
+    function keepProgramOpen(){
+        if($('program-popup').classList.contains('hidden'))return;
+        clearTimeout(popupTimer);
+        popupTimer=setTimeout(closeProgram,8000);
+    }
     function openProgram(){
         const popup=$('program-popup'),now=new Date(),current=now.getHours()*60+now.getMinutes();
         const weekday=now.getDay();
@@ -156,6 +175,9 @@
         popup.classList.remove('hidden');
         $('program-button').setAttribute('aria-expanded','true');
         popup.querySelector('.program-close').onclick=closeProgram;
+        popup.onscroll=keepProgramOpen;
+        popup.onwheel=keepProgramOpen;
+        popup.ontouchstart=keepProgramOpen;
         clearTimeout(popupTimer);popupTimer=setTimeout(closeProgram,8000);
     }
     function updateZoomButtons(){
