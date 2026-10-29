@@ -318,25 +318,6 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
         URL.revokeObjectURL(a.href);
         toast('config.js esportato')
     };
-    $('import').onclick = () => $('file').click();
-    $('file').onchange = async e => {
-        let f = e.target.files[0];
-        if (!f) return;
-        try {
-            let t = await f.text(),
-                x = f.name.endsWith('.json') ? JSON.parse(t) : Function(`return (${t.replace(/^\s*const\s+FESTA\s*=\s*/, '').replace(/;\s*$/, '')})`)();
-            if (!x.postazioni || !x.pietanze) throw Error('Configurazione non valida');
-            Object.keys(d).forEach(k => delete d[k]);
-            Object.assign(d, JSON.parse(JSON.stringify(x)));
-            sel = d.postazioni[0]?.id || null;
-            render();
-            toast('Configurazione importata')
-        } catch (err) {
-            alert(err.message)
-        }
-        e.target.value = ''
-    };
-
     function toast(t) {
         let e = $('toast');
         e.textContent = t;
