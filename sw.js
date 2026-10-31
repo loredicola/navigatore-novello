@@ -2,7 +2,7 @@
  * Prova brevemente la rete per avere i file aggiornati; se è lenta o assente,
  * apre subito la copia salvata e aggiorna la cache quando la rete risponde.
  */
-const VERSION = 'novello-v33';
+const VERSION = 'novello-v35';
 const FILES = ['./', 'index.html', 'musica.html', 'styles.css', 'app.js', 'config.js', 'mappa-catignano.webp'];
 const NETWORK_TIMEOUT = 1200;
 const BACKGROUND_TIMEOUT = 10000;

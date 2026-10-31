@@ -68,11 +68,13 @@
         }
 
         function cats() {
-            return ['Tutte', ...new Set(FESTA.pietanze.map(x => x.categoria).filter(Boolean))]
+            let categories = [...new Set(FESTA.pietanze.map(x => x.categoria).filter(Boolean))];
+            let glutenFree = categories.find(c => norm(c) === 'gluten free');
+            return ['Tutte', ...(glutenFree ? [glutenFree] : []), ...categories.filter(c => c !== glutenFree)]
         }
 
         function renderFilters() {
-            $('filters').innerHTML = cats().map(c => `<button type="button" class="filter ${s.cat === c ? 'active' : ''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+            $('filters').innerHTML = cats().map(c => `<button type="button" class="filter ${norm(c) === 'gluten free' ? 'gluten-free' : ''} ${s.cat === c ? 'active' : ''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
             document.querySelectorAll('.filter').forEach(b => b.onclick = () => {
                 s.cat = b.dataset.c;
                 renderFilters();

@@ -135,14 +135,23 @@ main>section{
 
 #filters{
     display:flex;
+    width:100%;
+    min-width:0;
     gap:7px;
     overflow-x:auto;
+    overflow-y:hidden;
     padding:9px 0 2px;
-    scrollbar-width:none
+    scrollbar-width:thin;
+    overscroll-behavior-x:contain
 }
 
 #filters::-webkit-scrollbar{
-    display:none
+    height:6px
+}
+
+#filters::-webkit-scrollbar-thumb{
+    background:#b8b2a9;
+    border-radius:999px
 }
 
 .filter{
@@ -159,6 +168,19 @@ main>section{
     background:var(--red);
     color:#fff;
     border-color:var(--red)
+}
+
+.filter.gluten-free{
+    background:#e5f3e8;
+    color:#28633a;
+    border-color:#91c49c;
+    font-weight:800
+}
+
+.filter.gluten-free.active{
+    background:#28633a;
+    color:#fff;
+    border-color:#28633a
 }
 
 /* Navigazione Mappa / Pietanze (solo smartphone) */
@@ -847,4 +869,26 @@ body.totem{
 body.totem input{
     user-select:text;
     -webkit-user-select:text
+}
+
+/* Sui totem ampi, usa la fascia laterale libera per il riepilogo selezioni. */
+@media(min-width:700px){
+    body.totem #map-section #viewport{
+        padding-left:clamp(180px,26vw,300px)
+    }
+
+    body.totem #map-section #stage{
+        margin-left:0;
+        margin-right:auto
+    }
+
+    body.totem #map-section .current{
+        left:10px;
+        right:auto;
+        top:50%;
+        bottom:auto;
+        width:calc(clamp(180px,26vw,300px) - 20px);
+        max-height:75%;
+        transform:translateY(-50%)
+    }
 }
