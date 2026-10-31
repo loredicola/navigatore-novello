@@ -239,10 +239,11 @@
             return Math.min(vp.clientWidth, vp.clientHeight * imgRatio())
         }
 
-        // Zoom iniziale: applica un incremento, equivalente a un click sul pulsante +.
+        // Zoom iniziale: mantiene la mappa entro la larghezza del viewport,
+        // così la navigazione iniziale richiede solo lo scorrimento verticale.
         function startZoom() {
             let f = fitWidth();
-            return f ? Math.min(MAX_ZOOM, Math.min(2, vp.clientWidth / f) * 1.4) : 1
+            return f ? Math.min(2, vp.clientWidth / f) : 1
         }
 
         function layout() {
