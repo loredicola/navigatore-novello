@@ -62,6 +62,18 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
         return Array.isArray(x.postazione) ? x.postazione : (x.postazione ? [x.postazione] : [])
     }
 
+    function compareStands(a, b) {
+        return Number(num(a)) - Number(num(b)) || String(a.nome).localeCompare(String(b.nome), 'it')
+    }
+
+    function orderedStands() {
+        return [...d.postazioni].sort(compareStands)
+    }
+
+    function assignedStands(dish) {
+        return standIds(dish).map(id => d.postazioni.find(p => p.id === id)).filter(Boolean).sort(compareStands)
+    }
+
     function render() {
         $('ename').value = d.nome || '';
         $('eyear').value = d.anno || '';
@@ -74,7 +86,7 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
     }
 
     function renderStands() {
-        $('stands').innerHTML = d.postazioni.map(p => `<div class="item ${p.id === sel ? 'sel' : ''}" data-id="${esc(p.id)}"><div><b>Cantina ${num(p)} · ${esc(p.nome)}</b><div class="meta">X ${n(p.x).toFixed(1)}% · Y ${n(p.y).toFixed(1)}%</div></div><div><button class="mini edit">✎</button><button class="mini danger del">×</button></div></div>`).join('');
+        $('stands').innerHTML = orderedStands().map(p => `<div class="item ${p.id === sel ? 'sel' : ''}" data-id="${esc(p.id)}"><div><b>Cantina ${num(p)} · ${esc(p.nome)}</b><div class="meta">X ${n(p.x).toFixed(1)}% · Y ${n(p.y).toFixed(1)}%</div></div><div><button class="mini edit">✎</button><button class="mini danger del">×</button></div></div>`).join('');
         document.querySelectorAll('#stands .item').forEach(e => {
             e.onclick = () => select(e.dataset.id);
             e.querySelector('.edit').onclick = x => {
@@ -89,8 +101,12 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
     }
 
     function renderDishes() {
-        $('dishes').innerHTML = d.pietanze.map(x => {
-            let ps = standIds(x).map(id => d.postazioni.find(y => y.id === id)).filter(Boolean);
+        $('dishes').innerHTML = [...d.pietanze].sort((a, b) => {
+            let ap = assignedStands(a)[0], bp = assignedStands(b)[0];
+            if (!ap || !bp) return ap ? -1 : bp ? 1 : a.nome.localeCompare(b.nome, 'it');
+            return compareStands(ap, bp) || a.nome.localeCompare(b.nome, 'it');
+        }).map(x => {
+            let ps = assignedStands(x);
             return `<div class="item"><div><b>${esc(x.nome)}</b><div class="meta">${esc(x.categoria || '')} · ${ps.length ? ps.map(p => esc(p.nome)).join(', ') : 'Nessuna cantina'}</div></div><div><button class="mini editdish" data-id="${esc(x.id)}">✎</button><button class="mini danger deldish" data-id="${esc(x.id)}">×</button></div></div>`
         }).join('');
         document.querySelectorAll('.editdish').forEach(b => b.onclick = () => dishModal(b.dataset.id));
@@ -195,7 +211,7 @@ const EDITOR_PASSWORD = 'ProLocoCatignano2026';
         };
         let assigned = standIds(x);
         $('mtitle').textContent = id ? 'Modifica pietanza' : 'Nuova pietanza';
-        fields.innerHTML = `<label>Nome<input name="name" required value="${escA(x.nome)}"></label><label>ID tecnico<input name="id" required value="${escA(x.id)}" ${id ? 'readonly' : ''}></label><label>Categoria<input name="cat" value="${escA(x.categoria || '')}"></label><label>Descrizione<textarea name="desc" rows="3">${esc(x.descrizione || '')}</textarea></label><div class="stand-choices"><b>Cantine di ritiro</b><small>Puoi selezionarne più di una.</small>${d.postazioni.map(p => `<label><input type="checkbox" name="stands" value="${escA(p.id)}" ${assigned.includes(p.id) ? 'checked' : ''}> Cantina ${num(p)} · ${esc(p.nome)}</label>`).join('')}</div>`;
+        fields.innerHTML = `<label>Nome<input name="name" required value="${escA(x.nome)}"></label><label>ID tecnico<input name="id" required value="${escA(x.id)}" ${id ? 'readonly' : ''}></label><label>Categoria<input name="cat" value="${escA(x.categoria || '')}"></label><label>Descrizione<textarea name="desc" rows="3">${esc(x.descrizione || '')}</textarea></label><div class="stand-choices"><b>Cantine di ritiro</b><small>Puoi selezionarne più di una.</small>${orderedStands().map(p => `<label><input type="checkbox" name="stands" value="${escA(p.id)}" ${assigned.includes(p.id) ? 'checked' : ''}> Cantina ${num(p)} · ${esc(p.nome)}</label>`).join('')}</div>`;
         modal.dataset.type = 'dish';
         modal.dataset.id = id || '';
         modal.classList.remove('hidden')

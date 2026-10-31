@@ -527,6 +527,9 @@ const FESTA={
             "categoria": "Vino bottiglia",
             "descrizione": "",
             "postazione": [
+                "P02",
+                "P04",
+                "P05",
                 "P07",
                 "P11"
             ]
@@ -578,11 +581,11 @@ const FESTA={
         },
         {
             "id": "dolci senza glutine",
-            "nome": "Dolci senza glutine",
-            "categoria": "Dolci",
+            "nome": "Tris dolci senza glutine",
+            "categoria": "Gluten Free",
             "descrizione": "",
             "postazione": [
-                "P14"
+                "P11"
             ]
         },
         {
@@ -610,6 +613,17 @@ const FESTA={
             "descrizione": "",
             "postazione": [
                 "P02"
+            ]
+        },
+        {
+            "id": "pane senza glutine",
+            "nome": "Pane senza glutine",
+            "categoria": "Gluten Free",
+            "descrizione": "",
+            "postazione": [
+                "P01",
+                "P03",
+                "P04"
             ]
         }
     ]
