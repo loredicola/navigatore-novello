@@ -381,8 +381,18 @@
 
         // Salva l'app sul telefono: alle aperture successive funziona anche senza rete
         if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-            addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {
-            }))
+            let alreadyControlled = !!navigator.serviceWorker.controller;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (alreadyControlled) location.reload();
+                alreadyControlled = true
+            });
+            addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('sw.js');
+                    registration.update().catch(() => {})
+                } catch (e) {
+                }
+            })
         }
     }
 
